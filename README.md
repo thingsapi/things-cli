@@ -1,13 +1,11 @@
 # Things Python CLI
 
-A simple Python 3 library to read your [Things app](https://culturedcode.com/things) data using the [things.py API](https://github.com/thingsapi/things.py/).
+A simple Python 3 CLI to read your [Things app](https://culturedcode.com/things) data using the [things.py API](https://github.com/thingsapi/things.py/).
 
 ## Table of Contents
 
 - [Install](#install)
 - [Examples](#examples)
-- [Background](#background)
-- [Things URLs](#things-urls)
 
 ## Install
 
@@ -51,6 +49,6 @@ $ git clone https://github.com/thingsapi/things_cli && cd things_cli && make ins
   }
 ]
 
-% things-cli --csv today > today.csv && open today.csv # e.g. on macOS this might open Excel
+% things-cli --csv all > all.csv && open all.csv
 ```
 
