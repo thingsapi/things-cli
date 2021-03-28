@@ -18,6 +18,7 @@ import sys
 import argparse
 import json
 import csv
+from os import environ
 import webbrowser
 import argcomplete  # type: ignore
 
@@ -35,6 +36,10 @@ class ThingsCLI():
 
     def __init__(self, database=None):
         self.database = database
+        # todo: move to API:
+        if environ.get('THINGSDB'):
+            self.database = environ.get('THINGSDB')
+
 
     def print_tasks(self, tasks):
         """Print a task."""
@@ -188,29 +193,29 @@ class ThingsCLI():
             #    func = self.things3.functions[command]
             #    self.print_tasks(func(self.things3))
             if command == "inbox":
-                self.print_tasks(api.inbox())
+                self.print_tasks(api.inbox(filepath=self.database))
             elif command == "today":
-                self.print_tasks(api.today())
+                self.print_tasks(api.today(filepath=self.database))
             elif command == "upcoming":
-                self.print_tasks(api.upcoming())
+                self.print_tasks(api.upcoming(filepath=self.database))
             elif command == "anytime":
-                self.print_tasks(api.anytime())
+                self.print_tasks(api.anytime(filepath=self.database))
             elif command == "canceled":
-                self.print_tasks(api.canceled())
+                self.print_tasks(api.canceled(filepath=self.database))
             elif command == "completed":
-                self.print_tasks(api.completed())
+                self.print_tasks(api.completed(filepath=self.database))
             elif command == "logbook":
-                self.print_tasks(api.logbook())
+                self.print_tasks(api.logbook(filepath=self.database))
             elif command == "all":
-                self.print_tasks(api.todos())
+                self.print_tasks(api.todos(filepath=self.database))
             elif command == "due":
-                self.print_tasks(api.due())
+                self.print_tasks(api.due(filepath=self.database))
             elif command == "projects":
-                self.print_tasks(api.projects())
+                self.print_tasks(api.projects(filepath=self.database))
             elif command == "areas":
-                self.print_tasks(api.areas())
+                self.print_tasks(api.areas(filepath=self.database))
             elif command == "tags":
-                self.print_tasks(api.tags())
+                self.print_tasks(api.tags(filepath=self.database))
             elif command == "feedback":
                 webbrowser.open(
                     'https://github.com/thingsapi/things-cli/issues')
