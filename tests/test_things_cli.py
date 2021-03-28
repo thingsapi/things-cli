@@ -31,7 +31,7 @@ class ThingsCLICase(unittest.TestCase):
 
     def test_today(self):
         """Test Today."""
-        args = self.things3_cli.get_parser().parse_args(['today'])
+        args = self.things3_cli.get_parser().parse_args(['-d', 'tests/main.sqlite', 'today'])
         new_out = io.StringIO()
         old_out = sys.stdout
         try:
@@ -43,7 +43,7 @@ class ThingsCLICase(unittest.TestCase):
 
     def test_csv(self):
         """Test Next via CSV."""
-        args = self.things3_cli.get_parser().parse_args(['-c', 'anytime'])
+        args = self.things3_cli.get_parser().parse_args(['-d', 'tests/main.sqlite', '-c', 'anytime'])
         new_out = io.StringIO()
         old_out = sys.stdout
         try:
@@ -55,7 +55,7 @@ class ThingsCLICase(unittest.TestCase):
 
     def test_json(self):
         """Test Upcoming via JSON."""
-        args = self.things3_cli.get_parser().parse_args(['-j', 'upcoming'])
+        args = self.things3_cli.get_parser().parse_args(['-d', 'tests/main.sqlite', '-j', 'upcoming'])
         new_out = io.StringIO()
         old_out = sys.stdout
         try:

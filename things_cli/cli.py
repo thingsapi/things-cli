@@ -22,7 +22,7 @@ from os import environ
 import webbrowser
 import argcomplete  # type: ignore
 
-from things import api  # noqa todo: VisualStudio and Pyright not happy
+import things as api
 
 
 class ThingsCLI():
@@ -30,7 +30,7 @@ class ThingsCLI():
 
     print_json = False
     print_csv = False
-    print_opml = False
+    # print_opml = False
     # anonymize = False
     database = None
 
@@ -40,7 +40,6 @@ class ThingsCLI():
         if environ.get('THINGSDB'):
             self.database = environ.get('THINGSDB')
 
-
     def print_tasks(self, tasks):
         """Print a task."""
         if self.print_json:
@@ -48,7 +47,7 @@ class ThingsCLI():
         # elif self.print_opml:
         #    Things3OPML().print_tasks(tasks)
         elif self.print_csv:
-            fieldnames = [ ]
+            fieldnames = []
             for task in tasks:
                 fieldnames.extend(x for x in task if x not in fieldnames)
             writer = csv.DictWriter(
@@ -159,13 +158,16 @@ class ThingsCLI():
                             action="store_true", default=False,
                             help="output as CSV", dest="csv")
 
-        parser.add_argument("-o", "--opml",
-                            action="store_true", default=False,
-                            help="output as OPML", dest="opml")
+        # parser.add_argument("-o", "--opml",
+        #                     action="store_true", default=False,
+        #                     help="output as OPML", dest="opml")
 
         # parser.add_argument("-a", "--anonymize",
         #                     action="store_true", default=False,
         #                     help="anonymize output", dest="anonymize")
+
+        parser.add_argument("-d", "--database",
+                            help="set path to database", dest="database")
 
         parser.add_argument(
             "--version",
@@ -185,37 +187,15 @@ class ThingsCLI():
             command = args.command
             self.print_json = args.json
             self.print_csv = args.csv
-            self.print_opml = args.opml
+            self.database = args.database if args.database is not None else self.database
+            # self.print_opml = args.opml
             # self.anonymize = args.anonymize
             # self.things3.anonymize = self.anonymize ## not implemented
 
-            # if command in api.functions:
-            #    func = self.things3.functions[command]
-            #    self.print_tasks(func(self.things3))
-            if command == "inbox":
-                self.print_tasks(api.inbox(filepath=self.database))
-            elif command == "today":
-                self.print_tasks(api.today(filepath=self.database))
-            elif command == "upcoming":
-                self.print_tasks(api.upcoming(filepath=self.database))
-            elif command == "anytime":
-                self.print_tasks(api.anytime(filepath=self.database))
-            elif command == "canceled":
-                self.print_tasks(api.canceled(filepath=self.database))
-            elif command == "completed":
-                self.print_tasks(api.completed(filepath=self.database))
-            elif command == "logbook":
-                self.print_tasks(api.logbook(filepath=self.database))
+            if command in dir(api):
+                self.print_tasks(getattr(api, command)(filepath=self.database))
             elif command == "all":
                 self.print_tasks(api.todos(filepath=self.database))
-            elif command == "due":
-                self.print_tasks(api.due(filepath=self.database))
-            elif command == "projects":
-                self.print_tasks(api.projects(filepath=self.database))
-            elif command == "areas":
-                self.print_tasks(api.areas(filepath=self.database))
-            elif command == "tags":
-                self.print_tasks(api.tags(filepath=self.database))
             elif command == "feedback":
                 webbrowser.open(
                     'https://github.com/thingsapi/things-cli/issues')
