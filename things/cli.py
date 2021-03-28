@@ -68,46 +68,52 @@ class ThingsCLI():
                                            metavar="command",
                                            required=True,
                                            dest="command")
+        # Core database methods
         subparsers.add_parser('inbox',
                               help='Shows inbox tasks')
         subparsers.add_parser('today',
                               help='Shows todays tasks')
         subparsers.add_parser('upcoming',
                               help='Shows upcoming tasks')
-        subparsers.add_parser('next',
-                              help='Shows next tasks')
-        subparsers.add_parser('backlog',
-                              help='Shows backlog tasks')
+        subparsers.add_parser('anytime',
+                              help='Shows anytime tasks')
         subparsers.add_parser('completed',
                               help='Shows completed tasks')
-        subparsers.add_parser('cancelled',
-                              help='Shows cancelled tasks')
-        subparsers.add_parser('trashed',
-                              help='Shows trashed tasks')
-        subparsers.add_parser('feedback',
-                              help='Give feedback')
+        subparsers.add_parser('canceled',
+                              help='Shows canceled tasks')
         subparsers.add_parser('all',
                               help='Shows all tasks')
-        subparsers.add_parser('csv',
-                              help='Exports tasks as CSV')
         subparsers.add_parser('areas',
                               help='Shows all areas')
-        subparsers.add_parser('opml',
-                              help='Exports tasks as OPML')
+        subparsers.add_parser('projects',
+                              help='Shows all projects')
+        subparsers.add_parser('repeating',
+                              help='Shows all repeating tasks')
+        subparsers.add_parser('logbook',
+                              help='Shows tasks completed today')
+        subparsers.add_parser('trashed',
+                              help='Shows trashed tasks')
+        subparsers.add_parser('subtasks',
+                              help='Shows all subtasks')
+        subparsers.add_parser('tags',
+                              help='Shows all tags ordered by their usage')
         subparsers.add_parser('due',
                               help='Shows tasks with due dates')
-        subparsers.add_parser('empty',
-                              help='Shows projects that are empty')
         subparsers.add_parser('headings',
                               help='Shows headings')
+        # Additional helper methods
+        subparsers.add_parser('feedback',
+                              help='Give feedback')
+        subparsers.add_parser('backlog',
+                              help='Shows backlog tasks')
+        subparsers.add_parser('empty',
+                              help='Shows projects that are empty')
         subparsers.add_parser('hours',
                               help='Shows hours planned today')
         subparsers.add_parser('ical',
                               help='Shows tasks ordered by due date as iCal')
         subparsers.add_parser('lint',
                               help='Shows tasks that float around')
-        subparsers.add_parser('logbook',
-                              help='Shows tasks completed today')
         subparsers.add_parser('mostClosed',
                               help='Shows days when most tasks were closed')
         subparsers.add_parser('mostCancelled',
@@ -124,10 +130,6 @@ class ThingsCLI():
                               help='Shows all nextish tasks')
         subparsers.add_parser('old',
                               help='Shows all old tasks')
-        subparsers.add_parser('projects',
-                              help='Shows all projects')
-        subparsers.add_parser('repeating',
-                              help='Shows all repeating tasks')
         subparsers.add_parser('schedule',
                               help='Schedules an event using a template')
         subparsers.add_parser('search',
@@ -136,12 +138,8 @@ class ThingsCLI():
                               help='Provides a number of statistics')
         subparsers.add_parser('statcsv',
                               help='Exports some statistics as CSV')
-        subparsers.add_parser('subtasks',
-                              help='Shows all subtasks')
         subparsers.add_parser('tag',
                               help='Shows all tasks with the waiting for tag')
-        subparsers.add_parser('tags',
-                              help='Shows all tags ordered by their usage')
         subparsers.add_parser('waiting',
                               help='Shows all tasks with the waiting for tag')
 
@@ -190,17 +188,29 @@ class ThingsCLI():
                 self.print_tasks(api.inbox())
             elif command == "today":
                 self.print_tasks(api.today())
+            elif command == "upcoming":
+                self.print_tasks(api.upcoming())
+            elif command == "anytime":
+                self.print_tasks(api.anytime())
+            elif command == "canceled":
+                self.print_tasks(api.canceled())
+            elif command == "completed":
+                self.print_tasks(api.completed())
+            elif command == "logbook":
+                self.print_tasks(api.logbook())
+            elif command == "all":
+                self.print_tasks(api.todos())
+            elif command == "due":
+                self.print_tasks(api.due())
             elif command == "projects":
                 self.print_tasks(api.projects())
             elif command == "areas":
                 self.print_tasks(api.areas())
             elif command == "tags":
                 self.print_tasks(api.tags())
-            elif command == "csv":
-                print("Deprecated: use --csv instead")
             elif command == "feedback":
                 webbrowser.open(
-                    'https://github.com/AlexanderWillner/KanbanView/issues')
+                    'https://github.com/thingsapi/things-cli/issues')
             else:
                 ThingsCLI.print_unimplemented()
 
