@@ -1,0 +1,10 @@
+#coverage==4.5.4
+#logzero==1.5.0
+#pycodestyle==2.5.0
+#pyflakes==2.1.1
+#pylint==2.4.4
+#flake8==3.7.9
+#python-coveralls==2.9.3
+#flask==1.1.2
+argcomplete==1.11.1
+things==0.0.1
