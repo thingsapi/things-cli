@@ -18,7 +18,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pipenv
-        make deps-install
+        # make deps-install
     - name: Run lint
       run: |
         pip install black pycodestyle pylama pylint flake8 mypy
@@ -27,7 +27,7 @@ jobs:
     - name: Run tests
       run: |
         pip install coverage
-        make test
+        # make test
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
       with:
