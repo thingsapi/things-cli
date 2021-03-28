@@ -36,7 +36,7 @@ class ThingsCLI():
 
     def __init__(self, database=None):
         self.database = database
-        # todo: move to API:
+        # noqa todo: move to API:
         if environ.get('THINGSDB'):
             self.database = environ.get('THINGSDB')
 
@@ -187,7 +187,8 @@ class ThingsCLI():
             command = args.command
             self.print_json = args.json
             self.print_csv = args.csv
-            self.database = args.database if args.database is not None else self.database
+            self.database = args.database \
+                if args.database is not None else self.database
             # self.print_opml = args.opml
             # self.anonymize = args.anonymize
             # self.things3.anonymize = self.anonymize ## not implemented

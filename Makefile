@@ -20,7 +20,7 @@ run: ## Run the code
 	@$(PYTHON) -m $(SRC_CORE).$(MAIN)
 
 install: ## Install the code
-	@$(PYTHON) setup.py install --user
+	@$(PYTHON) setup.py install
 
 uninstall: ## Uninstall the code
 	@$(PIP) uninstall -y things
@@ -78,8 +78,10 @@ code-lint: ## Lint the code
 lint: code-style code-lint  ## Lint everything
 
 deps-install: ## Install the dependencies
-	@type $(PIPENV) >/dev/null 2>&1 || (echo "Run '$(PIP) install pipenv' first." >&2 ; exit 1)
-	@$(PIPENV) install
+	@#type $(PIPENV) >/dev/null 2>&1 || (echo "Run '$(PIP) install pipenv' first." >&2 ; exit 1)
+	@#$(PIPENV) install
+	@$(PIP) install -r requirements.txt
+
 
 feedback: ## Give feedback
 	@open https://github.com/thingsapi/things-cli/issues
