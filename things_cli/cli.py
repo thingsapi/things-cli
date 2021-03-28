@@ -31,10 +31,10 @@ class ThingsCLI():
     print_csv = False
     print_opml = False
     # anonymize = False
-    things3 = None
+    database = None
 
     def __init__(self, database=None):
-        pass
+        self.database = database
 
     def print_tasks(self, tasks):
         """Print a task."""
@@ -43,8 +43,11 @@ class ThingsCLI():
         # elif self.print_opml:
         #    Things3OPML().print_tasks(tasks)
         elif self.print_csv:
+            fieldnames = [ ]
+            for task in tasks:
+                fieldnames.extend(x for x in task if x not in fieldnames)
             writer = csv.DictWriter(
-                sys.stdout, fieldnames=tasks[0].keys(), delimiter=';')
+                sys.stdout, fieldnames=fieldnames, delimiter=';')
             writer.writeheader()
             writer.writerows(tasks)
         else:

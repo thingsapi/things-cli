@@ -14,12 +14,12 @@ def package_files(directory):
     return paths
 
 
-APP = ['things_cli']
+APP = ['things-cli']
 APP_NAME = "Things CLI"
 AUTHOR = "Alexander Willner"
 AUTHOR_MAIL = "alex@willner.ws"
 DESCRIPTON = "A simple Python 3 CLI to read your Things app data."
-URL = "https://example.org"
+URL = "https://github.com/thingsapi/things-cli"
 VERSION = "0.0.1"
 DATA_FILES = package_files('')
 OPTIONS = {
@@ -34,7 +34,7 @@ setup(
     app=APP,
     author=AUTHOR,
     author_email=AUTHOR_MAIL,
-    name="things_cli",
+    name="things-cli",
     description=DESCRIPTON,
     long_description=LONG_DESRIPTION,
     long_description_content_type="text/markdown",

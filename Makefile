@@ -1,6 +1,6 @@
 VERSION=0.0.1
-MAIN=things
-SRC_CORE=things
+MAIN=cli
+SRC_CORE=things_cli
 SRC_TEST=tests
 PYTHON=python3
 PYDOC=pydoc3
@@ -28,7 +28,7 @@ uninstall: ## Uninstall the code
 test: ## Test the code
 	@type coverage >/dev/null 2>&1 || (echo "Run '$(PIP) install coverage' first." >&2 ; exit 1)
 	@coverage erase
-	@coverage run -a -m $(SRC_TEST).test_things
+	@coverage run -a -m $(SRC_TEST).test_things_cli
 	@coverage report
 
 .PHONY: doc
@@ -82,7 +82,7 @@ deps-install: ## Install the dependencies
 	@$(PIPENV) install
 
 feedback: ## Give feedback
-	@open https://github.com/thingsapi/things.py/issues
+	@open https://github.com/thingsapi/things-cli/issues
 
 upload: clean ## Upload the code
 	@python3 setup.py sdist bdist_wheel
