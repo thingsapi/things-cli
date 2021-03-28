@@ -20,8 +20,7 @@ run: ## Run the code
 	@$(PYTHON) -m $(SRC_CORE).$(MAIN)
 
 install: ## Install the code
-	@$(PYTHON) setup.py install
-	@echo "You can now use 'things' API library.
+	@$(PYTHON) setup.py install --user
 
 uninstall: ## Uninstall the code
 	@$(PIP) uninstall -y things
