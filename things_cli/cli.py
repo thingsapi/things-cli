@@ -197,7 +197,7 @@ class ThingsCLI():
                 self.print_tasks(getattr(api, command)(filepath=self.database))
             elif command == "all":
                 self.print_tasks(api.todos(filepath=self.database))
-            elif command == "feedback":
+            elif command == "feedback":  # pragma: no cover
                 webbrowser.open(
                     'https://github.com/thingsapi/things-cli/issues')
             else:

@@ -30,6 +30,7 @@ test: ## Test the code
 	@coverage erase
 	@coverage run -a -m $(SRC_TEST).test_things_cli
 	@coverage report
+	@coverage html
 
 .PHONY: doc
 doc: ## Document the code

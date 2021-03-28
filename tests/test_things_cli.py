@@ -29,6 +29,21 @@ class ThingsCLICase(unittest.TestCase):
                     sys.stdout = old_out
                 self.assertIn(" ", new_out.getvalue())
 
+    def test_noparam(self):
+        """Test no parameter."""
+        new_out = io.StringIO()
+        old_out = sys.stdout
+        with self.assertRaises(SystemExit):
+            sys.stderr = new_out
+            self.things3_cli.main()
+        sys.stderr = old_out
+        self.assertIn("usage:", new_out.getvalue())
+        with self.assertRaises(SystemExit):
+            sys.stderr = new_out
+            cli.main()
+        sys.stderr = old_out
+        self.assertIn("usage:", new_out.getvalue())
+
     def test_today(self):
         """Test Today."""
         args = self.things3_cli.get_parser().parse_args(['-d', 'tests/main.sqlite', 'today'])
