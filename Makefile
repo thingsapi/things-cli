@@ -67,7 +67,7 @@ code-lint: ## Lint the code
 	@if type pylint >/dev/null 2>&1 ; then pylint $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install pylint' first." >&2 ; fi
 	@echo Flake...
-	@if type flake8 >/dev/null 2>&1 ; then flake8 --max-complexity 10 $(SRC_CORE) ; \
+	@if type flake8 >/dev/null 2>&1 ; then flake8 --max-complexity 10 --max-line-length 88 $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install flake8' first." >&2 ; fi
 	@echo Pyright...
 	@if type pyright >/dev/null 2>&1 ; then pyright $(SRC_CORE) ; \
