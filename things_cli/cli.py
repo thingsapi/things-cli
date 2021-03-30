@@ -185,7 +185,6 @@ class ThingsCLI:
                 self.print_tasks(api.todos(filepath=self.database))
             elif command == "search":
                 self.print_tasks(api.search(args.string, filepath=self.database))
-                #print("todo: implement search for: '%s'" % args.string)
             elif command == "feedback":  # pragma: no cover
                 webbrowser.open("https://github.com/thingsapi/things-cli/issues")
             elif command in dir(api):
