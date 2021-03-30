@@ -14,20 +14,25 @@ class ThingsCLICase(unittest.TestCase):
 
     things3_cli = cli.ThingsCLI(database='tests/main.sqlite')
 
+    def _test_main(self, args, expected):
+        new_out = io.StringIO()
+        old_out = sys.stdout
+        try:
+            sys.stdout = new_out
+            self.things3_cli.main(args)
+        finally:
+            sys.stdout = old_out
+        self.assertIn(expected, new_out.getvalue())
+
     def test_methods(self):
         """Invoke all commands."""
         parser = self.things3_cli.get_parser()
         for command in parser._subparsers._actions[1].choices:  # noqa # pylint: disable=protected-access
             if command not in ["feedback", "search"]:
                 args = parser.parse_args([command])
-                new_out = io.StringIO()
-                old_out = sys.stdout
-                try:
-                    sys.stdout = new_out
-                    self.things3_cli.main(args)
-                finally:
-                    sys.stdout = old_out
-                self.assertIn(" ", new_out.getvalue())
+                self._test_main(args, " ")
+        args = parser.parse_args(['search', 'To-Do'])
+        self._test_main(args, "To-Do in Today")
 
     def test_noparam(self):
         """Test no parameter."""

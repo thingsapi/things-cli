@@ -60,9 +60,9 @@ class ThingsCLI:
                 print(" - ", title, " (", context, ")")
 
     @classmethod
-    def print_unimplemented(cls):
+    def print_unimplemented(cls, command):
         """Show warning that method is not yet implemented."""
-        print("not implemented yet (see things.sh for a more complete CLI)")
+        print("command '%s' not implemented yet" % command, file=sys.stderr)
 
     @classmethod
     def get_parser(cls):
@@ -72,7 +72,10 @@ class ThingsCLI:
         subparsers = parser.add_subparsers(
             help="", metavar="command", required=True, dest="command"
         )
+
+        ################################
         # Core database methods
+        ################################
         subparsers.add_parser("inbox", help="Shows inbox tasks")
         subparsers.add_parser("today", help="Shows todays tasks")
         subparsers.add_parser("upcoming", help="Shows upcoming tasks")
@@ -82,48 +85,69 @@ class ThingsCLI:
         subparsers.add_parser("all", help="Shows all tasks")
         subparsers.add_parser("areas", help="Shows all areas")
         subparsers.add_parser("projects", help="Shows all projects")
-        subparsers.add_parser("repeating", help="Shows all repeating tasks")
         subparsers.add_parser("logbook", help="Shows tasks completed today")
-        subparsers.add_parser("trashed", help="Shows trashed tasks")
-        subparsers.add_parser("subtasks", help="Shows all subtasks")
         subparsers.add_parser("tags", help="Shows all tags ordered by their usage")
         subparsers.add_parser("due", help="Shows tasks with due dates")
-        subparsers.add_parser("headings", help="Shows headings")
-        # Additional helper methods
+
+        ################################
+        # Additional functions
+        ################################
         subparsers.add_parser("feedback", help="Give feedback")
-        subparsers.add_parser("backlog", help="Shows backlog tasks")
-        subparsers.add_parser("empty", help="Shows projects that are empty")
-        subparsers.add_parser("hours", help="Shows hours planned today")
-        subparsers.add_parser("ical", help="Shows tasks ordered by due date as iCal")
-        subparsers.add_parser("lint", help="Shows tasks that float around")
-        subparsers.add_parser(
-            "mostClosed", help="Shows days when most tasks were closed"
-        )
-        subparsers.add_parser(
-            "mostCancelled", help="Shows days when most tasks were cancelled"
-        )
-        subparsers.add_parser(
-            "mostTrashed", help="Shows days when most tasks were trashed"
-        )
-        subparsers.add_parser(
-            "mostCreated", help="Shows days when most tasks were created"
-        )
-        subparsers.add_parser("mostTasks", help="Shows projects that have most tasks")
-        subparsers.add_parser(
-            "mostCharacters", help="Shows tasks that have most characters"
-        )
-        subparsers.add_parser("nextish", help="Shows all nextish tasks")
-        subparsers.add_parser("old", help="Shows all old tasks")
-        subparsers.add_parser("schedule", help="Schedules an event using a template")
         subparsers.add_parser(
             "search", help="Searches for a specific task"
         ).add_argument("string", help="String to search for")
-        subparsers.add_parser("stat", help="Provides a number of statistics")
-        subparsers.add_parser("statcsv", help="Exports some statistics as CSV")
-        subparsers.add_parser("tag", help="Shows all tasks with the waiting for tag")
-        subparsers.add_parser(
-            "waiting", help="Shows all tasks with the waiting for tag"
-        )
+
+        ################################
+        # To be implemented in things.py
+        ################################
+        # subparsers.add_parser("repeating", help="Shows all repeating tasks")
+        # subparsers.add_parser("trashed", help="Shows trashed tasks")
+        # subparsers.add_parser("subtasks", help="Shows all subtasks")
+        # subparsers.add_parser("headings", help="Shows headings")
+
+        ################################
+        # To be converted from https://github.com/alexanderwillner/things.sh
+        ################################
+        # subparsers.add_parser("backlog", help="Shows backlog tasks")
+        # subparsers.add_parser("empty", help="Shows projects that are empty")
+        # subparsers.add_parser("hours", help="Shows hours planned today")
+        # subparsers.add_parser("ical", help="Shows tasks ordered by due date as iCal")
+        # subparsers.add_parser("lint", help="Shows tasks that float around")
+        # subparsers.add_parser(
+        #     "mostClosed", help="Shows days when most tasks were closed"
+        # )
+        # subparsers.add_parser(
+        #     "mostCancelled", help="Shows days when most tasks were cancelled"
+        # )
+        # subparsers.add_parser(
+        #     "mostTrashed", help="Shows days when most tasks were trashed"
+        # )
+        # subparsers.add_parser(
+        #     "mostCreated", help="Shows days when most tasks were created"
+        # )
+        # subparsers.add_parser("mostTasks", help="Shows projects that have most tasks")
+        # subparsers.add_parser(
+        #     "mostCharacters", help="Shows tasks that have most characters"
+        # )
+        # subparsers.add_parser("nextish", help="Shows all nextish tasks")
+        # subparsers.add_parser("old", help="Shows all old tasks")
+        # subparsers.add_parser("schedule", help="Schedules an event using a template")
+        # subparsers.add_parser("stat", help="Provides a number of statistics")
+        # subparsers.add_parser("statcsv", help="Exports some statistics as CSV")
+        # subparsers.add_parser("tag", help="Shows all tasks with the waiting for tag")
+        # subparsers.add_parser(
+        #     "waiting", help="Shows all tasks with the waiting for tag"
+        # )
+
+        ################################
+        # To be converted from https://github.com/alexanderwillner/things.sh
+        ################################
+        # parser.add_argument("-o", "--opml",
+        #                     action="store_true", default=False,
+        #                     help="output as OPML", dest="opml")
+        # parser.add_argument("-a", "--anonymize",
+        #                     action="store_true", default=False,
+        #                     help="anonymize output", dest="anonymize")
 
         parser.add_argument(
             "-j",
@@ -142,14 +166,6 @@ class ThingsCLI:
             help="output as CSV",
             dest="csv",
         )
-
-        # parser.add_argument("-o", "--opml",
-        #                     action="store_true", default=False,
-        #                     help="output as OPML", dest="opml")
-
-        # parser.add_argument("-a", "--anonymize",
-        #                     action="store_true", default=False,
-        #                     help="anonymize output", dest="anonymize")
 
         parser.add_argument(
             "-d", "--database", help="set path to database", dest="database"
@@ -190,8 +206,9 @@ class ThingsCLI:
                 webbrowser.open("https://github.com/thingsapi/things-cli/issues")
             elif command in dir(api):
                 self.print_tasks(getattr(api, command)(filepath=self.database))
-            else:
-                ThingsCLI.print_unimplemented()
+            else:  # pragma: no cover
+                ThingsCLI.print_unimplemented(command)
+                sys.exit(3)
 
 
 def main():
