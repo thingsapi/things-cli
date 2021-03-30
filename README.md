@@ -1,6 +1,15 @@
 # Things Python CLI
 
-A simple Python 3 CLI to read your [Things app](https://culturedcode.com/things) data using the [things.py API](https://github.com/thingsapi/things.py/).
+A simple Python 3 CLI to read your [Things app](https://culturedcode.com/things) data using the [things-cli API](https://github.com/thingsapi/things-cli/).
+
+[![Build Status](https://github.com/thingsapi/things-cli/workflows/Build-Test/badge.svg)](https://github.com/thingsapi/things-cli/actions)
+[![Coverage Status](https://codecov.io/gh/thingsapi/things-cli/branch/main/graph/badge.svg?token=DBWGKAEYAP)](https://codecov.io/gh/thingsapi/things-cli)
+[![GitHub Release](https://img.shields.io/github/v/release/thingsapi/things-cli?sort=semver)](https://github.com/thingsapi/things-cli/releases)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/things?label=pypi%20downloads)](https://pypi.org/project/things/)
+[![GitHub Download Count](https://img.shields.io/github/downloads/thingsapi/things-cli/total.svg)](https://github.com/thingsapi/things-cli/releases)
+[![GitHub Issues](https://img.shields.io/github/issues/thingsapi/things-cli)](https://github.com/thingsapi/things-cli/issues)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/quality/g/thingsapi/things-cli)](https://scrutinizer-ci.com/g/thingsapi/things-cli/?branch=master)
 
 ## Table of Contents
 
