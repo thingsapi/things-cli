@@ -181,14 +181,15 @@ class ThingsCLI:
             # self.anonymize = args.anonymize
             # self.things3.anonymize = self.anonymize ## not implemented
 
-            if command in dir(api):
-                self.print_tasks(getattr(api, command)(filepath=self.database))
-            elif command == "all":
+            if command == "all":
                 self.print_tasks(api.todos(filepath=self.database))
             elif command == "search":
-                print("todo: implement search for: '%s'" % args.string)
+                self.print_tasks(api.search(args.string, filepath=self.database))
+                #print("todo: implement search for: '%s'" % args.string)
             elif command == "feedback":  # pragma: no cover
                 webbrowser.open("https://github.com/thingsapi/things-cli/issues")
+            elif command in dir(api):
+                self.print_tasks(getattr(api, command)(filepath=self.database))
             else:
                 ThingsCLI.print_unimplemented()
 
