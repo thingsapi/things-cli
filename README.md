@@ -1,6 +1,6 @@
 # Things Python CLI
 
-A simple Python 3 CLI to read your [Things app](https://culturedcode.com/things) data using the [things-cli API](https://github.com/thingsapi/things-cli/).
+A simple Python 3 CLI to read your [Things app](https://culturedcode.com/things) data using the [things.py API](https://github.com/thingsapi/things.py/).
 
 [![Build Status](https://github.com/thingsapi/things-cli/workflows/Build-Test/badge.svg)](https://github.com/thingsapi/things-cli/actions)
 [![Coverage Status](https://codecov.io/gh/thingsapi/things-cli/branch/main/graph/badge.svg?token=DBWGKAEYAP)](https://codecov.io/gh/thingsapi/things-cli)
