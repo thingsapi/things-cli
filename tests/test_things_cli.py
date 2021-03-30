@@ -18,7 +18,7 @@ class ThingsCLICase(unittest.TestCase):
         """Invoke all commands."""
         parser = self.things3_cli.get_parser()
         for command in parser._subparsers._actions[1].choices:  # noqa # pylint: disable=protected-access
-            if command != "feedback" and command != "search":
+            if command not in ["feedback", "search"]:
                 args = parser.parse_args([command])
                 new_out = io.StringIO()
                 old_out = sys.stdout
