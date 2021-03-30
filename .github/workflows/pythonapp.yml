@@ -22,7 +22,7 @@ jobs:
     - name: Run lint
       run: |
         pip install black pycodestyle pylama pylint flake8 mypy
-        npm install pyright
+        npm install -f pyright
         make lint
     - name: Run tests
       run: |
