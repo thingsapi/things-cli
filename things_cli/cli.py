@@ -157,6 +157,7 @@ class ThingsCLI:
 
         parser.add_argument(
             "--version",
+            "-v",
             action="version",
             version="%(prog)s (version {version})".format(version=__version__),
         )
