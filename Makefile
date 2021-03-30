@@ -34,7 +34,7 @@ test: ## Test the code
 
 .PHONY: doc
 doc: ## Document the code
-	@$(PYDOC) $(SRC_CORE).things
+	@$(PYDOC) $(SRC_CORE).cli
 
 .PHONY: clean
 clean: ## Cleanup
