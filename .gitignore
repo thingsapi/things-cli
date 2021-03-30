@@ -3,4 +3,5 @@
 dist
 build
 *.egg-info/
-
+htmlcov/
+**/__pycache__
