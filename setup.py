@@ -20,7 +20,7 @@ AUTHOR = "Alexander Willner"
 AUTHOR_MAIL = "alex@willner.ws"
 DESCRIPTON = "A simple Python 3 CLI to read your Things app data."
 URL = "https://github.com/thingsapi/things-cli"
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 DATA_FILES = package_files('')
 OPTIONS = {
     'argv_emulation': False,
@@ -57,5 +57,5 @@ setup(
             'things-cli = things_cli.cli:main',
         ]
     },
-    install_requires=['things.py', 'argcomplete'],
+    install_requires=['things.py', 'argcomplete']
 )
