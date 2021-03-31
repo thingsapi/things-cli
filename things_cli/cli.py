@@ -9,7 +9,7 @@ __author__ = "Alexander Willner"
 __copyright__ = "2021 Alexander Willner"
 __credits__ = ["Alexander Willner"]
 __license__ = "Apache License 2.0"
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __maintainer__ = "Alexander Willner"
 __email__ = "alex@willner.ws"
 __status__ = "Development"
@@ -87,7 +87,7 @@ class ThingsCLI:
         subparsers.add_parser("projects", help="Shows all projects")
         subparsers.add_parser("logbook", help="Shows tasks completed today")
         subparsers.add_parser("tags", help="Shows all tags ordered by their usage")
-        subparsers.add_parser("due", help="Shows tasks with due dates")
+        subparsers.add_parser("deadlines", help="Shows tasks with due dates")
 
         ################################
         # Additional functions
