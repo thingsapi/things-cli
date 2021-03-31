@@ -5,11 +5,11 @@ A simple Python 3 CLI to read your [Things app](https://culturedcode.com/things)
 [![Build Status](https://github.com/thingsapi/things-cli/workflows/Build-Test/badge.svg)](https://github.com/thingsapi/things-cli/actions)
 [![Coverage Status](https://codecov.io/gh/thingsapi/things-cli/branch/master/graph/badge.svg?token=dJbdYWeg7d)](https://codecov.io/gh/thingsapi/things-cli)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/quality/g/thingsapi/things-cli)](https://scrutinizer-ci.com/g/thingsapi/things-cli/?branch=master)
-[![GitHub Release](https://img.shields.io/github/v/release/thingsapi/things-cli?sort=semver)](https://github.com/thingsapi/things-cli/releases)
+[![GitHub Issues](https://img.shields.io/github/issues/thingsapi/things-cli)](https://github.com/thingsapi/things-cli/issues)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![GitHub Release](https://img.shields.io/github/v/release/thingsapi/things-cli?sort=semver)](https://github.com/thingsapi/things-cli/releases)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/things-cli?label=pypi%20downloads)](https://pypi.org/project/things-cli/)
 [![GitHub Download Count](https://img.shields.io/github/downloads/thingsapi/things-cli/total.svg)](https://github.com/thingsapi/things-cli/releases)
-[![GitHub Issues](https://img.shields.io/github/issues/thingsapi/things-cli)](https://github.com/thingsapi/things-cli/issues)
 
 ## Table of Contents
 
