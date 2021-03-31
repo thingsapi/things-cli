@@ -6,7 +6,7 @@ A simple Python 3 CLI to read your [Things app](https://culturedcode.com/things)
 [![Coverage Status](https://codecov.io/gh/thingsapi/things-cli/branch/main/graph/badge.svg?token=DBWGKAEYAP)](https://codecov.io/gh/thingsapi/things-cli)
 [![GitHub Release](https://img.shields.io/github/v/release/thingsapi/things-cli?sort=semver)](https://github.com/thingsapi/things-cli/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/things?label=pypi%20downloads)](https://pypi.org/project/things/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/things-cli?label=pypi%20downloads)](https://pypi.org/project/things-cli/)
 [![GitHub Download Count](https://img.shields.io/github/downloads/thingsapi/things-cli/total.svg)](https://github.com/thingsapi/things-cli/releases)
 [![GitHub Issues](https://img.shields.io/github/issues/thingsapi/things-cli)](https://github.com/thingsapi/things-cli/issues)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/quality/g/thingsapi/things-cli)](https://scrutinizer-ci.com/g/thingsapi/things-cli/?branch=master)
@@ -19,9 +19,9 @@ A simple Python 3 CLI to read your [Things app](https://culturedcode.com/things)
 ## Install
 
 ```sh
-$ pip3 install things_cli
+$ pip3 install things-cli
 # or
-$ git clone https://github.com/thingsapi/things_cli && cd things_cli && make install
+$ git clone https://github.com/thingsapi/things-cli && cd things-cli && make install
 ```
 
 ## Examples

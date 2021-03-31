@@ -23,7 +23,7 @@ install: ## Install the code
 	@$(PYTHON) setup.py install
 
 uninstall: ## Uninstall the code
-	@$(PIP) uninstall -y things
+	@$(PIP) uninstall -y things-cli
 
 test: ## Test the code
 	@type coverage >/dev/null 2>&1 || (echo "Run '$(PIP) install coverage' first." >&2 ; exit 1)
@@ -89,4 +89,4 @@ feedback: ## Give feedback
 
 upload: clean ## Upload the code
 	@python3 setup.py sdist bdist_wheel
-	@python3 -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/things*
+	@python3 -m twine upload dist/things*
