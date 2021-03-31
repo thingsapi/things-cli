@@ -56,5 +56,6 @@ setup(
         'console_scripts': [
             'things-cli = things_cli.cli:main',
         ]
-    }
+    },
+    install_requires=['things.py', 'argcomplete'],
 )
