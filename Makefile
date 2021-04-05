@@ -73,7 +73,7 @@ code-lint: ## Lint the code
 	@if type pyright >/dev/null 2>&1 ; then pyright $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run 'npm install -f pyright' first." >&2 ; fi
 	@echo MyPy...
-	@if type mypy >/dev/null 2>&1 ; then mypy $(SRC_CORE) ; \
+	@if type mypy >/dev/null 2>&1 ; then mypy --ignore-missing-imports $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install mypy' first." >&2 ; fi
 
 lint: code-style code-lint  ## Lint everything
