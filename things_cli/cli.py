@@ -55,8 +55,10 @@ class ThingsCLI:
     def csv_dumps(self, tasks):
         fieldnames = []
         self.csv_header(tasks, fieldnames)
-        self.csv_header([{'checklist': ""}], fieldnames)
-        print(fieldnames)
+        if 'items' in fieldnames:
+            fieldnames.remove('items')
+        if 'checklist' in fieldnames:
+            fieldnames.remove('checklist')
 
         output = StringIO()
         writer = csv.DictWriter(output, fieldnames=fieldnames, delimiter=";")
@@ -70,7 +72,6 @@ class ThingsCLI:
         for task in tasks:
             fieldnames.extend(field for field in task if field not in fieldnames)
             self.csv_header(task.get('items', []), fieldnames)
-            task.pop('items', [])
 
     def csv_converter(self, tasks, writer):
         if tasks is True:
@@ -79,7 +80,7 @@ class ThingsCLI:
             self.csv_converter(task.get('items', []), writer)
             task.pop('items', [])
             self.csv_converter(task.get('checklist', []), writer)
-            task['checklist'] = True
+            task.pop('checklist', [])
             writer.writerow(task)
 
     def opml_dumps(self, tasks):
@@ -104,7 +105,7 @@ class ThingsCLI:
             self.opml_convert(task.get('items', []), area)
             task.pop('items', [])
             self.opml_convert(task.get('checklist', []), area)
-            task['checklist'] = True
+            task.pop('checklist', [])
 
     def txt_dumps(self, tasks, indentation="", result=""):
         """Print pretty text version of selected tasks."""
@@ -123,7 +124,6 @@ class ThingsCLI:
             result = self.txt_dumps(task.get('items', []), indentation + "  ", result)
             task.pop('items', [])
             result = self.txt_dumps(task.get('checklist', []), indentation + "  ", result)
-            task['checklist'] = True
 
         return result
 
@@ -277,8 +277,32 @@ class ThingsCLI:
             # self.things3.anonymize = self.anonymize ## not implemented
 
             if command == "all":
-                self.print_tasks(api.todos(filepath=self.database,
-                                           include_items=self.recursive))
+                inbox = api.inbox(filepath=self.database, include_items=self.recursive)
+                today = api.today(filepath=self.database, include_items=self.recursive)
+                upcoming = api.upcoming(filepath=self.database, include_items=self.recursive)
+                anytime = api.anytime(filepath=self.database, include_items=self.recursive)
+                someday = api.someday(filepath=self.database, include_items=self.recursive)
+                logbook = api.logbook(filepath=self.database, include_items=self.recursive)
+                no_area = api.projects(area=False, filepath=self.database, include_items=self.recursive)
+                areas = api.areas(filepath=self.database, include_items=self.recursive)
+                structure = [{"title": "Inbox",
+                              "items": inbox},
+                             {"title": "Today",
+                              "items": today},
+                             {"title": "Upcoming",
+                              "items": upcoming},
+                             {"title": "Anytime",
+                              "items": anytime},
+                             {"title": "Someday",
+                              "items": someday},
+                             {"title": "Logbook",
+                              "items": logbook},
+                             {"title": "No Area",
+                              "items": no_area},
+                             {"title": "Areas",
+                              "items": areas}
+                             ]
+                self.print_tasks(structure)
             elif command == "upcoming":
                 result = getattr(api, command)(filepath=self.database,
                                                include_items=self.recursive)
