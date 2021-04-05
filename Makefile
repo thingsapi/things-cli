@@ -1,4 +1,4 @@
-VERSION=0.0.4
+VERSION=0.0.5
 MAIN=cli
 SRC_CORE=things_cli
 SRC_TEST=tests
