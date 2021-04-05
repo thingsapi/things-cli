@@ -15,6 +15,7 @@ A simple Python 3 CLI to read your [Things app](https://culturedcode.com/things)
 
 - [Install](#install)
 - [Examples](#examples)
+- [Screenshots](#screenshots)
 
 ## Install
 
@@ -64,4 +65,12 @@ $ git clone https://github.com/thingsapi/things-cli && cd things-cli && make ins
 % things-cli --opml --recursive all > all.opml && open all.opml
 ```
 
-![opml](./resources/opml.png)
+## Screenshots
+
+### Mindmap
+
+![opml](https://raw.githubusercontent.com/thingsapi/things-cli/master/resources/opml.png)
+
+### Excel
+
+![excel](https://raw.githubusercontent.com/thingsapi/things-cli/master/resources/excel.png)
