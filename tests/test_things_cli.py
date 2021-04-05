@@ -31,6 +31,14 @@ class ThingsCLICase(unittest.TestCase):
             if command not in ["feedback", "search"]:
                 args = parser.parse_args([command])
                 self._test_main(args, " ")
+                args = parser.parse_args(['-r', command])
+                self._test_main(args, " ")
+                args = parser.parse_args(['-r', '-o', command])
+                self._test_main(args, " ")
+                args = parser.parse_args(['-r', '-c', command])
+                self._test_main(args, ";")
+                args = parser.parse_args(['-r', '-j', command])
+                self._test_main(args, " ")
         args = parser.parse_args(['search', 'To-Do'])
         self._test_main(args, "To-Do in Today")
 

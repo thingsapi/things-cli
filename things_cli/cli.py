@@ -18,12 +18,12 @@ import sys
 import argparse
 import json
 import csv
-from os import environ
 import webbrowser
 import argcomplete  # type: ignore
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element, SubElement
 from xml.dom import minidom
+from io import StringIO
 
 import things as api
 
@@ -40,49 +40,77 @@ class ThingsCLI:
 
     def __init__(self, database=None):
         self.database = database
-        # noqa todo: move to API:
-        if environ.get("THINGSDB"):
-            self.database = environ.get("THINGSDB")
 
     def print_tasks(self, tasks):
         """Print a task."""
         if self.print_json:
             print(json.dumps(tasks))
         elif self.print_opml:
-            top = Element('opml')
-            head = SubElement(top, 'head')
-            title = SubElement(head, 'title')
-            title.text = 'Things 3 Database'
-            body = SubElement(top, 'body')
-            self.tasks_to_opml(tasks, body)
-            xmlstr = minidom.parseString(
-                ET.tostring(top)).toprettyxml(indent="   ")
-            print(xmlstr)
-
+            print(self.opml_dumps(tasks))
         elif self.print_csv:
-            # todo: continue here
-            fieldnames = []
-            for task in tasks:
-                fieldnames.extend(x for x in task if x not in fieldnames)
-                if self.recursive:
-                    if task['type'] == 'area':
-                        for task in api.tasks(area=task['uuid'], filepath=self.database):
-                            fieldnames.extend(x for x in task if x not in fieldnames)
-            writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames, delimiter=";")
-            writer.writeheader()
-            for task in tasks:
-                del task['items']
-                writer.writerow(task)
-                if self.recursive:
-                    if task['type'] == 'area':
-                        writer.writerows(api.tasks(area=task['uuid'], filepath=self.database))
+            print(self.csv_dumps(tasks))
         else:
-            result = self.tasks_to_txt(tasks)
-            print(result)
+            print(self.txt_dumps(tasks))
 
-    def tasks_to_txt(self, tasks, indentation="", result=""):
+    def csv_dumps(self, tasks):
+        fieldnames = []
+        self.csv_header(tasks, fieldnames)
+        self.csv_header([{'checklist': ""}], fieldnames)
+        print(fieldnames)
+
+        output = StringIO()
+        writer = csv.DictWriter(output, fieldnames=fieldnames, delimiter=";")
+        writer.writeheader()
+
+        self.csv_converter(tasks, writer)
+
+        return output.getvalue()
+
+    def csv_header(self, tasks, fieldnames):
+        for task in tasks:
+            fieldnames.extend(field for field in task if field not in fieldnames)
+            self.csv_header(task.get('items', []), fieldnames)
+            task.pop('items', [])
+
+    def csv_converter(self, tasks, writer):
+        if tasks is True:
+            return
+        for task in tasks:
+            self.csv_converter(task.get('items', []), writer)
+            task.pop('items', [])
+            self.csv_converter(task.get('checklist', []), writer)
+            task['checklist'] = True
+            writer.writerow(task)
+
+    def opml_dumps(self, tasks):
+        top = Element('opml')
+        head = SubElement(top, 'head')
+        SubElement(head, 'title').text = 'Things 3 Database'
+        body = SubElement(top, 'body')
+
+        self.opml_convert(tasks, body)
+
+        return minidom.parseString(
+            ET.tostring(top)).toprettyxml(indent="   ")
+
+    def opml_convert(self, tasks, top):
+        """Print pretty OPML of selected tasks."""
+
+        if tasks is True:
+            return
+        for task in tasks:
+            area = SubElement(top, 'outline')
+            area.set('text', task['title'])
+            self.opml_convert(task.get('items', []), area)
+            task.pop('items', [])
+            self.opml_convert(task.get('checklist', []), area)
+            task['checklist'] = True
+
+    def txt_dumps(self, tasks, indentation="", result=""):
         """Print pretty text version of selected tasks."""
 
+        if tasks is True:
+            return result
         for task in tasks:
             title = task["title"]
             context = task.get("project_title", None) or \
@@ -92,32 +120,12 @@ class ThingsCLI:
             start = task.get("start_date", None)
             details = " | ".join(filter(None, [start, context]))
             result = result + f"{indentation}- {title} ({details})\n"
-            if self.recursive:
-                if task['type'] == 'area':
-                    result = self.tasks_to_txt(api.tasks(area=task['uuid'], filepath=self.database), indentation + "  ", result)
-                elif task['type'] == 'project':
-                    result = self.tasks_to_txt(api.tasks(project=task['uuid'], filepath=self.database), indentation + "  ", result)
-                elif task['type'] == 'heading':
-                    result = self.tasks_to_txt(api.tasks(heading=task['uuid'], filepath=self.database), indentation + "  ", result)
-                elif task['type'] == 'to-do':
-                    result = self.tasks_to_txt(api.checklist_items(task['uuid'], filepath=self.database), indentation + "  ", result)
+            result = self.txt_dumps(task.get('items', []), indentation + "  ", result)
+            task.pop('items', [])
+            result = self.txt_dumps(task.get('checklist', []), indentation + "  ", result)
+            task['checklist'] = True
+
         return result
-
-    def tasks_to_opml(self, tasks, top):
-        """Print pretty OPML of selected tasks."""
-
-        for task in tasks:
-            area = SubElement(top, 'outline')
-            area.set('text', task['title'])
-            if self.recursive:
-                if task['type'] == 'area':
-                    self.tasks_to_opml(api.tasks(area=task['uuid'], filepath=self.database), area)
-                elif task['type'] == 'project':
-                    self.tasks_to_opml(api.tasks(project=task['uuid'], filepath=self.database), area)
-                elif task['type'] == 'heading':
-                    self.tasks_to_opml(api.tasks(heading=task['uuid'], filepath=self.database), area)
-                elif task['type'] == 'to-do':
-                    self.tasks_to_opml(api.checklist_items(task['uuid'], filepath=self.database), area)
 
     @classmethod
     def print_unimplemented(cls, command):
@@ -272,11 +280,13 @@ class ThingsCLI:
                 self.print_tasks(api.todos(filepath=self.database,
                                            include_items=self.recursive))
             elif command == "upcoming":
-                result = getattr(api, command)(filepath=self.database)
+                result = getattr(api, command)(filepath=self.database,
+                                               include_items=self.recursive)
                 result.sort(key=lambda task: task["start_date"], reverse=False)
                 self.print_tasks(result)
             elif command == "search":
-                self.print_tasks(api.search(args.string, filepath=self.database))
+                self.print_tasks(api.search(args.string, filepath=self.database,
+                                            include_items=self.recursive))
             elif command == "feedback":  # pragma: no cover
                 webbrowser.open("https://github.com/thingsapi/things-cli/issues")
             elif command in dir(api):
