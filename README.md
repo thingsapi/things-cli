@@ -64,4 +64,4 @@ $ git clone https://github.com/thingsapi/things-cli && cd things-cli && make ins
 % things-cli --opml --recursive all > all.opml && open all.opml
 ```
 
-![opml](/Users/awi/things-cli/resources/opml.png)
+![opml](./resources/opml.png)
