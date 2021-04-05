@@ -19,11 +19,11 @@ import argparse
 import json
 import csv
 import webbrowser
-import argcomplete  # type: ignore
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element, SubElement
 from xml.dom import minidom
 from io import StringIO
+import argcomplete  # type: ignore
 
 import things as api
 
@@ -53,6 +53,8 @@ class ThingsCLI:
             print(self.txt_dumps(tasks))
 
     def csv_dumps(self, tasks):
+        """Convert tasks into CSV."""
+
         fieldnames = []
         self.csv_header(tasks, fieldnames)
         if 'items' in fieldnames:
@@ -69,11 +71,15 @@ class ThingsCLI:
         return output.getvalue()
 
     def csv_header(self, tasks, fieldnames):
+        """Convert tasks into CSV header."""
+
         for task in tasks:
             fieldnames.extend(field for field in task if field not in fieldnames)
             self.csv_header(task.get('items', []), fieldnames)
 
     def csv_converter(self, tasks, writer):
+        """Convert tasks into CSV."""
+
         if tasks is True:
             return
         for task in tasks:
@@ -84,6 +90,8 @@ class ThingsCLI:
             writer.writerow(task)
 
     def opml_dumps(self, tasks):
+        """Convert tasks into OPML."""
+
         top = Element('opml')
         head = SubElement(top, 'head')
         SubElement(head, 'title').text = 'Things 3 Database'
@@ -241,7 +249,8 @@ class ThingsCLI:
         )
 
         parser.add_argument(
-            "-r", "--recursive", help="in-depth output", dest="recursive", default=False, action="store_true"
+            "-r", "--recursive", help="in-depth output", dest="recursive",
+            default=False, action="store_true"
         )
 
         parser.add_argument(
@@ -283,7 +292,8 @@ class ThingsCLI:
                 anytime = api.anytime(filepath=self.database, include_items=self.recursive)
                 someday = api.someday(filepath=self.database, include_items=self.recursive)
                 logbook = api.logbook(filepath=self.database, include_items=self.recursive)
-                no_area = api.projects(area=False, filepath=self.database, include_items=self.recursive)
+                no_area = api.projects(area=False, filepath=self.database,
+                                       include_items=self.recursive)
                 areas = api.areas(filepath=self.database, include_items=self.recursive)
                 structure = [{"title": "Inbox",
                               "items": inbox},
