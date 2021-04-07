@@ -50,7 +50,7 @@ class ThingsCLI:
         elif self.print_csv:
             print(self.csv_dumps(tasks))
         else:
-            print(self.txt_dumps(tasks))
+            print(self.txt_dumps(tasks), end='')
 
     def csv_dumps(self, tasks):
         """Convert tasks into CSV."""
@@ -278,9 +278,7 @@ class ThingsCLI:
             self.print_json = args.json
             self.print_csv = args.csv
             self.print_opml = args.opml
-            self.database = (
-                args.database if args.database is not None else self.database
-            )
+            self.database = args.database or self.database
             self.recursive = args.recursive
             # self.anonymize = args.anonymize
             # self.things3.anonymize = self.anonymize ## not implemented
