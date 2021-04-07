@@ -9,7 +9,7 @@ __author__ = "Alexander Willner"
 __copyright__ = "2021 Alexander Willner"
 __credits__ = ["Alexander Willner"]
 __license__ = "Apache License 2.0"
-__version__ = "0.0.3"
+__version__ = "0.0.5"
 __maintainer__ = "Alexander Willner"
 __email__ = "alex@willner.ws"
 __status__ = "Development"
@@ -18,8 +18,11 @@ import sys
 import argparse
 import json
 import csv
-from os import environ
 import webbrowser
+import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import Element, SubElement
+from xml.dom import minidom
+from io import StringIO
 import argcomplete  # type: ignore
 
 import things as api
@@ -30,34 +33,107 @@ class ThingsCLI:
 
     print_json = False
     print_csv = False
-    # print_opml = False
+    print_opml = False
     # anonymize = False
     database = None
+    recursive = False
 
     def __init__(self, database=None):
         self.database = database
-        # noqa todo: move to API:
-        if environ.get("THINGSDB"):
-            self.database = environ.get("THINGSDB")
 
     def print_tasks(self, tasks):
         """Print a task."""
         if self.print_json:
             print(json.dumps(tasks))
-        # elif self.print_opml:
-        #    Things3OPML().print_tasks(tasks)
+        elif self.print_opml:
+            print(self.opml_dumps(tasks))
         elif self.print_csv:
-            fieldnames = []
-            for task in tasks:
-                fieldnames.extend(x for x in task if x not in fieldnames)
-            writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames, delimiter=";")
-            writer.writeheader()
-            writer.writerows(tasks)
+            print(self.csv_dumps(tasks))
         else:
-            for task in tasks:
-                title = task["title"]
-                context = task["start"] if "start" in task else ""
-                print(" - ", title, " (", context, ")")
+            print(self.txt_dumps(tasks), end='')
+
+    def csv_dumps(self, tasks):
+        """Convert tasks into CSV."""
+
+        fieldnames = []
+        self.csv_header(tasks, fieldnames)
+        if 'items' in fieldnames:
+            fieldnames.remove('items')
+        if 'checklist' in fieldnames:
+            fieldnames.remove('checklist')
+
+        output = StringIO()
+        writer = csv.DictWriter(output, fieldnames=fieldnames, delimiter=";")
+        writer.writeheader()
+
+        self.csv_converter(tasks, writer)
+
+        return output.getvalue()
+
+    def csv_header(self, tasks, fieldnames):
+        """Convert tasks into CSV header."""
+
+        for task in tasks:
+            fieldnames.extend(field for field in task if field not in fieldnames)
+            self.csv_header(task.get('items', []), fieldnames)
+
+    def csv_converter(self, tasks, writer):
+        """Convert tasks into CSV."""
+
+        if tasks is True:
+            return
+        for task in tasks:
+            self.csv_converter(task.get('items', []), writer)
+            task.pop('items', [])
+            self.csv_converter(task.get('checklist', []), writer)
+            task.pop('checklist', [])
+            writer.writerow(task)
+
+    def opml_dumps(self, tasks):
+        """Convert tasks into OPML."""
+
+        top = Element('opml')
+        head = SubElement(top, 'head')
+        SubElement(head, 'title').text = 'Things 3 Database'
+        body = SubElement(top, 'body')
+
+        self.opml_convert(tasks, body)
+
+        return minidom.parseString(
+            ET.tostring(top)).toprettyxml(indent="   ")
+
+    def opml_convert(self, tasks, top):
+        """Print pretty OPML of selected tasks."""
+
+        if tasks is True:
+            return
+        for task in tasks:
+            area = SubElement(top, 'outline')
+            area.set('text', task['title'])
+            self.opml_convert(task.get('items', []), area)
+            task.pop('items', [])
+            self.opml_convert(task.get('checklist', []), area)
+            task.pop('checklist', [])
+
+    def txt_dumps(self, tasks, indentation="", result=""):
+        """Print pretty text version of selected tasks."""
+
+        if tasks is True:
+            return result
+        for task in tasks:
+            title = task["title"]
+            context = task.get("project_title", None) or \
+                task.get("area_title", None) or \
+                task.get("heading_title", None) or \
+                task.get("start", None)
+            start = task.get("start_date", None)
+            details = " | ".join(filter(None, [start, context]))
+            result = result + f"{indentation}- {title} ({details})\n"
+            result = self.txt_dumps(task.get('items', []), indentation + "  ", result)
+            task.pop('items', [])
+            result = self.txt_dumps(task.get('checklist', []), indentation + "  ", result)
+
+        return result
 
     @classmethod
     def print_unimplemented(cls, command):
@@ -142,12 +218,17 @@ class ThingsCLI:
         ################################
         # To be converted from https://github.com/alexanderwillner/things.sh
         ################################
-        # parser.add_argument("-o", "--opml",
-        #                     action="store_true", default=False,
-        #                     help="output as OPML", dest="opml")
         # parser.add_argument("-a", "--anonymize",
         #                     action="store_true", default=False,
         #                     help="anonymize output", dest="anonymize")
+
+        parser.add_argument(
+            "-o",
+            "--opml",
+            action="store_true",
+            default=False,
+            help="output as OPML",
+            dest="opml")
 
         parser.add_argument(
             "-j",
@@ -165,6 +246,11 @@ class ThingsCLI:
             default=False,
             help="output as CSV",
             dest="csv",
+        )
+
+        parser.add_argument(
+            "-r", "--recursive", help="in-depth output", dest="recursive",
+            default=False, action="store_true"
         )
 
         parser.add_argument(
@@ -191,21 +277,54 @@ class ThingsCLI:
             command = args.command
             self.print_json = args.json
             self.print_csv = args.csv
-            self.database = (
-                args.database if args.database is not None else self.database
-            )
-            # self.print_opml = args.opml
+            self.print_opml = args.opml
+            self.database = args.database or self.database
+            self.recursive = args.recursive
             # self.anonymize = args.anonymize
             # self.things3.anonymize = self.anonymize ## not implemented
 
             if command == "all":
-                self.print_tasks(api.todos(filepath=self.database))
+                inbox = api.inbox(filepath=self.database, include_items=self.recursive)
+                today = api.today(filepath=self.database, include_items=self.recursive)
+                upcoming = api.upcoming(filepath=self.database, include_items=self.recursive)
+                anytime = api.anytime(filepath=self.database, include_items=self.recursive)
+                someday = api.someday(filepath=self.database, include_items=self.recursive)
+                logbook = api.logbook(filepath=self.database, include_items=self.recursive)
+                no_area = api.projects(area=False, filepath=self.database,
+                                       include_items=self.recursive)
+                areas = api.areas(filepath=self.database, include_items=self.recursive)
+                structure = [{"title": "Inbox",
+                              "items": inbox},
+                             {"title": "Today",
+                              "items": today},
+                             {"title": "Upcoming",
+                              "items": upcoming},
+                             {"title": "Anytime",
+                              "items": anytime},
+                             {"title": "Someday",
+                              "items": someday},
+                             {"title": "Logbook",
+                              "items": logbook},
+                             {"title": "No Area",
+                              "items": no_area},
+                             {"title": "Areas",
+                              "items": areas}
+                             ]
+                self.print_tasks(structure)
+            elif command == "upcoming":
+                result = getattr(api, command)(filepath=self.database,
+                                               include_items=self.recursive)
+                result.sort(key=lambda task: task["start_date"], reverse=False)
+                self.print_tasks(result)
             elif command == "search":
-                self.print_tasks(api.search(args.string, filepath=self.database))
+                self.print_tasks(api.search(args.string, filepath=self.database,
+                                            include_items=self.recursive))
             elif command == "feedback":  # pragma: no cover
                 webbrowser.open("https://github.com/thingsapi/things-cli/issues")
             elif command in dir(api):
-                self.print_tasks(getattr(api, command)(filepath=self.database))
+                self.print_tasks(
+                    getattr(api, command)(filepath=self.database,
+                                          include_items=self.recursive))
             else:  # pragma: no cover
                 ThingsCLI.print_unimplemented(command)
                 sys.exit(3)

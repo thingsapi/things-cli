@@ -5,3 +5,7 @@ build
 *.egg-info/
 htmlcov/
 **/__pycache__
+.DS_Store
+*.csv
+*.opml
+

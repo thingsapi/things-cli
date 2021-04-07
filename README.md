@@ -15,6 +15,7 @@ A simple Python 3 CLI to read your [Things app](https://culturedcode.com/things)
 
 - [Install](#install)
 - [Examples](#examples)
+- [Screenshots](#screenshots)
 
 ## Install
 
@@ -28,18 +29,19 @@ $ git clone https://github.com/thingsapi/things-cli && cd things-cli && make ins
 
 ```shell
 % things-cli inbox
+ -  To-Do in Inbox with Checklist Items  ( Inbox )
  -  To-Do in Inbox  ( Inbox )
 
-% things-cli all  
- -  To-Do in Today  ( Anytime )
- -  To-Do in Inbox  ( Inbox )
- -  To-Do in Upcoming  ( Someday )
- -  To-Do in Heading  ( Anytime )
- -  To-Do in Project  ( Anytime )
- -  To-Do in Anytime  ( Anytime )
- -  To-Do in Someday  ( Someday )
- -  To-Do in Area  ( Anytime )
- -  Repeating To-Do  ( Someday )
+% things-cli --recursive areas
+- Area 3 ()
+  - Todo in Area 3 (Area 3)
+- Area 2 ()
+- Area 1 ()
+  - Project in Area 1 (Area 1)
+    - Todo in Area 1 (Project in Area 1)
+    - Heading (Project in Area 1)
+      - To-Do in Heading (Heading)
+  - To-Do in Area 1 (Area 1)
 
 % things-cli --json today|jq
 [
@@ -51,13 +53,24 @@ $ git clone https://github.com/thingsapi/things-cli && cd things-cli && make ins
     "notes": "With\nNotes",
     "start": "Anytime",
     "start_date": "2021-03-28",
-    "due_date": null,
+    "deadline": null,
     "stop_date": null,
     "created": "2021-03-28 21:11:22",
     "modified": "2021-03-28 21:11:30"
   }
 ]
 
-% things-cli --csv all > all.csv && open all.csv
+% things-cli --csv --recursive all > all.csv && open all.csv
+
+% things-cli --opml --recursive all > all.opml && open all.opml
 ```
 
+## Screenshots
+
+### Mindmap
+
+![opml](https://raw.githubusercontent.com/thingsapi/things-cli/master/resources/opml.png)
+
+### Excel
+
+![excel](https://raw.githubusercontent.com/thingsapi/things-cli/master/resources/excel.png)
