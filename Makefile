@@ -88,5 +88,8 @@ feedback: ## Give feedback
 	@open https://github.com/thingsapi/things-cli/issues
 
 upload: clean ## Upload the code
-	@python3 setup.py sdist bdist_wheel
-	@python3 -m twine upload dist/things*
+	@$(PYTHON) setup.py sdist bdist_wheel
+	@echo "########################"
+	@echo "Using environment variable PYPI_API_TOKEN..."
+	@echo "########################"
+	@$(PYTHON) -m twine upload dist/things.py* -u __token__ -p "${PYPI_API_TOKEN}"
