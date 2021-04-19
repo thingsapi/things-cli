@@ -7,10 +7,10 @@ PIP=pip3
 PIPENV=pipenv
 
 DATE:=$(shell date +"%Y-%m-%d")
-VERSION=$(shell $(PYTHON) -c 'import things; print(things.__version__)')
+VERSION=$(shell $(PYTHON) -c 'import things_cli; print(things_cli.__version__)')
 
 help: ## Print help for each target
-	$(info Things low-level Python API.)
+	$(info Things low-level Python CLI.)
 	$(info ============================)
 	$(info )
 	$(info Available commands:)
@@ -44,7 +44,7 @@ clean: ## Cleanup
 	@find . -name \*.pyc -delete
 	@find . -name __pycache__ -delete
 	@rm -rf htmlcov
-	@rm -rf build dist *.egg-info .eggs 
+	@rm -rf build dist *.egg-info .eggs
 	@rm -rf $(SRC_CORE)/.mypy_cache/
 	@rm -f .coverage
 

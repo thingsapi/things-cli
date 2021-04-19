@@ -18,6 +18,8 @@ from xml.etree.ElementTree import Element, SubElement
 import argcomplete  # type: ignore
 import things as api
 
+from things_cli import __version__
+
 
 class ThingsCLI:
     """A simple Python 3 CLI to read your Things app data."""
