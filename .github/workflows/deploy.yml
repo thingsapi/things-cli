@@ -3,6 +3,7 @@ name: publish
 on:
     release:
         types: [created]
+    workflow_dispatch:
 
 jobs:
     publish:
@@ -18,7 +19,8 @@ jobs:
 
             - name: Publish to PyPi
               env:
-                  PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+                  TWINE_USERNAME: __token__
+                  TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
               run: |
                   pip install wheel twine
                   make upload
