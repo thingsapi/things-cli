@@ -3,9 +3,10 @@
 
 """Module documentation goes here."""
 
-import unittest
 import io
 import sys
+import unittest
+
 from things_cli import cli
 
 

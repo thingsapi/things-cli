@@ -1,7 +1,8 @@
 """A simple Python 3 CLI to read your Things app data."""
 
 import os
-from setuptools import setup, find_packages  # type: ignore
+
+from setuptools import find_packages, setup  # type: ignore
 
 
 def package_files(directory):

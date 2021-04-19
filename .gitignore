@@ -8,4 +8,5 @@ htmlcov/
 .DS_Store
 *.csv
 *.opml
-
+.mypy_cache
+*.pyc

@@ -1,4 +1,3 @@
-VERSION=0.0.6
 MAIN=cli
 SRC_CORE=things_cli
 SRC_TEST=tests
@@ -6,6 +5,9 @@ PYTHON=python3
 PYDOC=pydoc3
 PIP=pip3
 PIPENV=pipenv
+
+DATE:=$(shell date +"%Y-%m-%d")
+VERSION=$(shell $(PYTHON) -c 'import things; print(things.__version__)')
 
 help: ## Print help for each target
 	$(info Things low-level Python API.)
@@ -42,11 +44,15 @@ clean: ## Cleanup
 	@find . -name \*.pyc -delete
 	@find . -name __pycache__ -delete
 	@rm -rf htmlcov
-	@rm -rf build dist *.egg-info
-	@rm -rf .mypy_cache/
+	@rm -rf build dist *.egg-info .eggs 
+	@rm -rf $(SRC_CORE)/.mypy_cache/
 	@rm -f .coverage
 
 auto-style: ## Style the code
+	@if type isort >/dev/null 2>&1 ; then isort . ; \
+	 else echo "SKIPPED. Run '$(PIP) install isort' first." >&2 ; fi
+	@if type autoflake >/dev/null 2>&1 ; then autoflake -r --in-place --remove-unused-variables . ; \
+	 else echo "SKIPPED. Run '$(PIP) install isort' first." >&2 ; fi
 	@if type black >/dev/null 2>&1 ; then black $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install black' first." >&2 ; fi
 
@@ -83,13 +89,26 @@ deps-install: ## Install the dependencies
 	@#$(PIPENV) install
 	@$(PIP) install -r requirements.txt
 
-
 feedback: ## Give feedback
 	@open https://github.com/thingsapi/things-cli/issues
 
-upload: clean ## Upload the code
+release: build ## Create a new release
+	@type gh >/dev/null 2>&1 || (echo "Run e.g. 'brew install gh' first." >&2 ; exit 1)
+	@gh release create "v$(VERSION)" -t "Release $(VERSION) ($(DATE))" 'dist/$(MAIN).py-$(VERSION).tar.gz'
+
+build: clean ## Build the code
 	@$(PYTHON) setup.py sdist bdist_wheel
+
+upload: build ## Upload the code
+	@type twine >/dev/null 2>&1 || (echo "Run e.g. 'pip install twine' first." >&2 ; exit 1)
 	@echo "########################"
-	@echo "Using environment variable PYPI_API_TOKEN..."
+	@echo "Using ~/.pypirc or environment variables TWINE_USERNAME and TWINE_PASSWORD"
+	@echo "See: https://packaging.python.org/specifications/pypirc/#using-a-pypi-token"
 	@echo "########################"
-	@$(PYTHON) -m twine upload dist/things.py* -u __token__ -p "${PYPI_API_TOKEN}"
+	@twine upload dist/things.py*
+
+db-to-things:
+	@cp tests/main.sqlite* ~/Library/Group\ Containers/JLMPQHK86H.com.culturedcode.ThingsMac/Things\ Database.thingsdatabase/
+
+db-from-things:
+	@cp ~/Library/Group\ Containers/JLMPQHK86H.com.culturedcode.ThingsMac/Things\ Database.thingsdatabase/main.sqlite* tests/
