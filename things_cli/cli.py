@@ -12,7 +12,7 @@ import json
 import sys
 import webbrowser
 from xml.dom import minidom
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ETree
 from xml.etree.ElementTree import Element, SubElement
 
 import argcomplete  # type: ignore
@@ -90,7 +90,7 @@ class ThingsCLI:
 
         self.opml_convert(tasks, body)
 
-        return minidom.parseString(ET.tostring(top)).toprettyxml(indent="   ")
+        return minidom.parseString(ETree.tostring(top)).toprettyxml(indent="   ")
 
     def opml_convert(self, tasks, top):
         """Print pretty OPML of selected tasks."""

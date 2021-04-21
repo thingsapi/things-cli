@@ -63,6 +63,39 @@ $ git clone https://github.com/thingsapi/things-cli && cd things-cli && make ins
 % things-cli --csv --recursive all > all.csv && open all.csv
 
 % things-cli --opml --recursive all > all.opml && open all.opml
+
+% things-cli -h
+usage: things-cli [-h] [-o] [-j] [-c] [-r] [-d DATABASE] [--version] command ...
+
+Simple read-only Thing 3 CLI.
+
+positional arguments:
+  command
+    inbox               Shows inbox tasks
+    today               Shows todays tasks
+    upcoming            Shows upcoming tasks
+    anytime             Shows anytime tasks
+    completed           Shows completed tasks
+    canceled            Shows canceled tasks
+    trash               Shows trashed tasks
+    all                 Shows all tasks
+    areas               Shows all areas
+    projects            Shows all projects
+    logbook             Shows tasks completed today
+    tags                Shows all tags ordered by their usage
+    deadlines           Shows tasks with due dates
+    feedback            Give feedback
+    search              Searches for a specific task
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -o, --opml            output as OPML
+  -j, --json            output as JSON
+  -c, --csv             output as CSV
+  -r, --recursive       in-depth output
+  -d DATABASE, --database DATABASE
+                        set path to database
+  --version, -v         show program's version number and exit
 ```
 
 ## Screenshots

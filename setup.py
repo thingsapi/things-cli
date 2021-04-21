@@ -21,7 +21,6 @@ AUTHOR = "Alexander Willner"
 AUTHOR_MAIL = "alex@willner.ws"
 DESCRIPTON = "A simple Python 3 CLI to read your Things app data."
 URL = "https://github.com/thingsapi/things-cli"
-VERSION = "0.0.6"
 DATA_FILES = package_files("")
 OPTIONS = {
     "argv_emulation": False,
@@ -49,7 +48,6 @@ setup(
         "Natural Language :: English",
     ],
     python_requires=">=3.6",
-    version=VERSION,
     data_files=DATA_FILES,
     options={"py2app": OPTIONS},
     setup_requires=["py2app"],
