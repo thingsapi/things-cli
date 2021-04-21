@@ -21,7 +21,7 @@ import things as api
 from things_cli import __version__
 
 
-class ThingsCLI:
+class ThingsCLI:  # pylint: disable=R0902
     """A simple Python 3 CLI to read your Things app data."""
 
     print_json = False
@@ -30,6 +30,9 @@ class ThingsCLI:
     # anonymize = False
     database = None
     recursive = False
+    filter_project = None
+    filter_area = None
+    filter_tag = None
 
     def __init__(self, database=None):
         self.database = database
@@ -153,6 +156,7 @@ class ThingsCLI:
         subparsers.add_parser("completed", help="Shows completed tasks")
         subparsers.add_parser("canceled", help="Shows canceled tasks")
         subparsers.add_parser("trash", help="Shows trashed tasks")
+        subparsers.add_parser("todos", help="Shows all todos")
         subparsers.add_parser("all", help="Shows all tasks")
         subparsers.add_parser("areas", help="Shows all areas")
         subparsers.add_parser("projects", help="Shows all projects")
@@ -217,6 +221,16 @@ class ThingsCLI:
         #                     help="anonymize output", dest="anonymize")
 
         parser.add_argument(
+            "-p", "--filter-project", dest="filter_project", help="Filter by project"
+        )
+        parser.add_argument(
+            "-a", "--filter-area", dest="filter_area", help="Filter by area"
+        )
+        parser.add_argument(
+            "-t", "--filtertag", dest="filter_tag", help="Filter by tag"
+        )
+
+        parser.add_argument(
             "-o",
             "--opml",
             action="store_true",
@@ -267,6 +281,16 @@ class ThingsCLI:
 
         return parser
 
+    def defaults(self):
+        """Some default options for the new API."""
+        return dict(
+            project=self.filter_project,
+            area=self.filter_area,
+            tag=self.filter_tag,
+            include_items=self.recursive,
+            filepath=self.database,
+        )
+
     def main(self, args=None):
         """ Main entry point of the app """
 
@@ -278,29 +302,30 @@ class ThingsCLI:
             self.print_csv = args.csv
             self.print_opml = args.opml
             self.database = args.database or self.database
+            self.filter_project = args.filter_project or None
+            self.filter_area = args.filter_area or None
+            self.filter_tag = args.filter_tag or None
             self.recursive = args.recursive
             # self.anonymize = args.anonymize
             # self.things3.anonymize = self.anonymize ## not implemented
+            defaults = self.defaults()
+
+            remove_filter = ["all", "areas", "tags"]
+            if command in remove_filter:
+                defaults.pop("area")
+                defaults.pop("project")
+                defaults.pop("tag")
 
             if command == "all":
-                inbox = api.inbox(filepath=self.database, include_items=self.recursive)
-                today = api.today(filepath=self.database, include_items=self.recursive)
-                upcoming = api.upcoming(
-                    filepath=self.database, include_items=self.recursive
-                )
-                anytime = api.anytime(
-                    filepath=self.database, include_items=self.recursive
-                )
-                someday = api.someday(
-                    filepath=self.database, include_items=self.recursive
-                )
-                logbook = api.logbook(
-                    filepath=self.database, include_items=self.recursive
-                )
-                no_area = api.projects(
-                    area=False, filepath=self.database, include_items=self.recursive
-                )
-                areas = api.areas(filepath=self.database, include_items=self.recursive)
+                inbox = api.inbox(**defaults)
+                today = api.today(**defaults)
+                upcoming = api.upcoming(**defaults)
+                anytime = api.anytime(**defaults)
+                someday = api.someday(**defaults)
+                logbook = api.logbook(**defaults)
+
+                no_area = api.projects(**defaults)
+                areas = api.areas(**defaults)
                 structure = [
                     {"title": "Inbox", "items": inbox},
                     {"title": "Today", "items": today},
@@ -313,9 +338,7 @@ class ThingsCLI:
                 ]
                 self.print_tasks(structure)
             elif command == "upcoming":
-                result = getattr(api, command)(
-                    filepath=self.database, include_items=self.recursive
-                )
+                result = getattr(api, command)(**defaults)
                 result.sort(key=lambda task: task["start_date"], reverse=False)
                 self.print_tasks(result)
             elif command == "search":
@@ -329,11 +352,7 @@ class ThingsCLI:
             elif command == "feedback":  # pragma: no cover
                 webbrowser.open("https://github.com/thingsapi/things-cli/issues")
             elif command in dir(api):
-                self.print_tasks(
-                    getattr(api, command)(
-                        filepath=self.database, include_items=self.recursive
-                    )
-                )
+                self.print_tasks(getattr(api, command)(**defaults))
             else:  # pragma: no cover
                 ThingsCLI.print_unimplemented(command)
                 sys.exit(3)
