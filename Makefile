@@ -106,7 +106,7 @@ upload: build ## Upload the code
 	@echo "Using ~/.pypirc or environment variables TWINE_USERNAME and TWINE_PASSWORD"
 	@echo "See: https://packaging.python.org/specifications/pypirc/#using-a-pypi-token"
 	@echo "########################"
-	@twine upload dist/things.py*
+	@twine upload dist/$(APP)*
 
 db-to-things:
 	@cp tests/main.sqlite* ~/Library/Group\ Containers/JLMPQHK86H.com.culturedcode.ThingsMac/Things\ Database.thingsdatabase/
