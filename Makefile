@@ -9,6 +9,7 @@ PIPENV=pipenv
 
 DATE:=$(shell date +"%Y-%m-%d")
 VERSION=$(shell $(PYTHON) -c 'import things_cli; print(things_cli.__version__)')
+SHELL := /usr/bin/env bash -euo pipefail -c
 
 help: ## Print help for each target
 	$(info Things low-level Python CLI.)
@@ -50,10 +51,13 @@ clean: ## Cleanup
 	@rm -f .coverage
 
 auto-style: ## Style the code
-	@if type isort >/dev/null 2>&1 ; then isort . ; \
+	@echo "isort..."
+	@if type isort >/dev/null 2>&1 ; then isort -rc . ; \
 	 else echo "SKIPPED. Run '$(PIP) install isort' first." >&2 ; fi
+	@echo "autoflake..."
 	@if type autoflake >/dev/null 2>&1 ; then autoflake -r --in-place --remove-unused-variables . ; \
 	 else echo "SKIPPED. Run '$(PIP) install isort' first." >&2 ; fi
+	@echo "black..."
 	@if type black >/dev/null 2>&1 ; then black $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install black' first." >&2 ; fi
 
