@@ -310,11 +310,12 @@ class ThingsCLI:  # pylint: disable=R0902
             # self.things3.anonymize = self.anonymize ## not implemented
             defaults = self.defaults()
 
-            remove_filter = ["all", "areas", "tags"]
-            if command in remove_filter:
+            if command == "tags":
+                defaults.pop("tag")
+                defaults.pop("project")
+            if command in ["all", "areas"]:
                 defaults.pop("area")
                 defaults.pop("project")
-                defaults.pop("tag")
 
             if command == "all":
                 inbox = api.inbox(**defaults)

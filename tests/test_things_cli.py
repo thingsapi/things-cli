@@ -12,7 +12,7 @@ from things_cli import cli
 class ThingsCLICase(unittest.TestCase):
     """Class documentation goes here."""
 
-    things3_cli = cli.ThingsCLI(database='tests/main.sqlite')
+    things3_cli = cli.ThingsCLI(database="tests/main.sqlite")
 
     def _test_main(self, args, expected):
         new_out = io.StringIO()
@@ -27,19 +27,21 @@ class ThingsCLICase(unittest.TestCase):
     def test_methods(self):
         """Invoke all commands."""
         parser = self.things3_cli.get_parser()
-        for command in parser._subparsers._actions[1].choices:  # noqa # pylint: disable=protected-access
+        for command in parser._subparsers._actions[
+            1
+        ].choices:  # noqa # pylint: disable=protected-access
             if command not in ["feedback", "search"]:
                 args = parser.parse_args([command])
                 self._test_main(args, " ")
-                args = parser.parse_args(['-r', command])
+                args = parser.parse_args(["-r", command])
                 self._test_main(args, " ")
-                args = parser.parse_args(['-r', '-o', command])
+                args = parser.parse_args(["-r", "-o", command])
                 self._test_main(args, " ")
-                args = parser.parse_args(['-r', '-c', command])
+                args = parser.parse_args(["-r", "-c", command])
                 self._test_main(args, ";")
-                args = parser.parse_args(['-r', '-j', command])
+                args = parser.parse_args(["-r", "-j", command])
                 self._test_main(args, " ")
-        args = parser.parse_args(['search', 'To-Do'])
+        args = parser.parse_args(["search", "To-Do"])
         self._test_main(args, "To-Do in Today")
 
     def test_noparam(self):
@@ -59,7 +61,9 @@ class ThingsCLICase(unittest.TestCase):
 
     def test_today(self):
         """Test Today."""
-        args = self.things3_cli.get_parser().parse_args(['-d', 'tests/main.sqlite', 'today'])
+        args = self.things3_cli.get_parser().parse_args(
+            ["-d", "tests/main.sqlite", "today"]
+        )
         new_out = io.StringIO()
         old_out = sys.stdout
         try:
@@ -71,7 +75,9 @@ class ThingsCLICase(unittest.TestCase):
 
     def test_csv(self):
         """Test Next via CSV."""
-        args = self.things3_cli.get_parser().parse_args(['-d', 'tests/main.sqlite', '-c', 'anytime'])
+        args = self.things3_cli.get_parser().parse_args(
+            ["-d", "tests/main.sqlite", "-c", "anytime"]
+        )
         new_out = io.StringIO()
         old_out = sys.stdout
         try:
@@ -83,7 +89,9 @@ class ThingsCLICase(unittest.TestCase):
 
     def test_json(self):
         """Test Upcoming via JSON."""
-        args = self.things3_cli.get_parser().parse_args(['-d', 'tests/main.sqlite', '-j', 'upcoming'])
+        args = self.things3_cli.get_parser().parse_args(
+            ["-d", "tests/main.sqlite", "-j", "upcoming"]
+        )
         new_out = io.StringIO()
         old_out = sys.stdout
         try:
@@ -94,5 +102,5 @@ class ThingsCLICase(unittest.TestCase):
         self.assertIn("7F4vqUNiTvGKaCUfv5pqYG", new_out.getvalue())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
