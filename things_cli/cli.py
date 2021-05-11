@@ -34,6 +34,7 @@ class ThingsCLI:  # pylint: disable=R0902
     filter_tag = None
 
     def __init__(self, database=None):
+        """Initialize class."""
         self.database = database
 
     def print_tasks(self, tasks):
@@ -138,7 +139,7 @@ class ThingsCLI:  # pylint: disable=R0902
 
     @classmethod
     def get_parser(cls):
-        """Create command line argument parser"""
+        """Create command line argument parser."""
         parser = argparse.ArgumentParser(description="Simple read-only Thing 3 CLI.")
 
         subparsers = parser.add_subparsers(
@@ -282,7 +283,7 @@ class ThingsCLI:  # pylint: disable=R0902
         return parser
 
     def defaults(self):
-        """Some default options for the new API."""
+        """Set default options for the new API."""
         return dict(
             project=self.filter_project,
             area=self.filter_area,
@@ -292,7 +293,7 @@ class ThingsCLI:  # pylint: disable=R0902
         )
 
     def main(self, args=None):
-        """ Main entry point of the app """
+        """Start the main app."""
 
         if args is None:
             self.main(ThingsCLI.get_parser().parse_args())
@@ -360,7 +361,7 @@ class ThingsCLI:  # pylint: disable=R0902
 
 
 def main():
-    """Main entry point for CLI installation"""
+    """Start for CLI installation."""
     ThingsCLI().main()
 
 
