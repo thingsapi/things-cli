@@ -15,8 +15,8 @@ import xml.etree.ElementTree as ETree
 from xml.etree.ElementTree import Element, SubElement
 
 import argcomplete  # type: ignore
-import things as api
 
+import things as api
 from things_cli import __version__
 
 
@@ -153,6 +153,7 @@ class ThingsCLI:  # pylint: disable=R0902
         subparsers.add_parser("upcoming", help="Shows upcoming tasks")
         subparsers.add_parser("anytime", help="Shows anytime tasks")
         subparsers.add_parser("completed", help="Shows completed tasks")
+        subparsers.add_parser("someday", help="Shows someday tasks")
         subparsers.add_parser("canceled", help="Shows canceled tasks")
         subparsers.add_parser("trash", help="Shows trashed tasks")
         subparsers.add_parser("todos", help="Shows all todos")
