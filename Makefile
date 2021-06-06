@@ -102,6 +102,12 @@ feedback: ## Give feedback
 
 release: build ## Create a new release
 	@type gh >/dev/null 2>&1 || (echo "Run e.g. 'brew install gh' first." >&2 ; exit 1)
+	@echo "Checking for not committed changes..."
+	@git diff --exit-code && git diff --cached --exit-code
+	@echo "########################"
+	@echo Making release for version "$(VERSION)". Press ENTER to continue...
+	@echo "########################"
+	@read
 	@gh release create "v$(VERSION)" -t "Release $(VERSION) ($(DATE))" 'dist/$(APP)-$(VERSION).tar.gz'
 
 build: clean ## Build the code
