@@ -25,6 +25,7 @@ class ThingsCLI:  # pylint: disable=R0902
 
     print_json = False
     print_csv = False
+    print_gantt = False
     print_opml = False
     # anonymize = False
     database = None
@@ -45,8 +46,55 @@ class ThingsCLI:  # pylint: disable=R0902
             print(self.opml_dumps(tasks))
         elif self.print_csv:
             print(self.csv_dumps(tasks))
+        elif self.print_gantt:
+            print("gantt")
+            print("  dateFormat  YYYY-MM-DD")
+            print("  title       Things To-Dos")
+            print("  excludes    weekends")
+            print(self.gantt_dumps(tasks))
         else:
             print(self.txt_dumps(tasks), end="")
+
+    def gantt_dumps(self, tasks, array=None):
+        """Convert tasks into mermaid-js GANTT."""
+
+        for task in tasks:
+            context = (
+                task.get("project_title", None)
+                or task.get("area_title", None)
+                or task.get("heading_title", None)
+                or task.get("start", None)
+                or ""
+            )
+
+            title = task["title"].replace(":", " ")
+            start = task.get("start_date")
+            deadline = task.get("deadline") or "1h"
+            if not start and deadline != "1h":
+                start = deadline
+            if start == deadline:
+                deadline = "1h"
+            if deadline == "1h":
+                visual = ":milestone"
+            else:
+                visual = ":active"
+                # noqa todo: if in the past: done
+            if start and not task.get("stop_date"):
+                if context not in array:
+                    array[context] = []
+                if not "".join(s for s in array[context] if title.lower() in s.lower()):
+                    array[context].append(
+                        f"    {title} {visual}, {start}, {deadline}\n"
+                    )
+            self.gantt_dumps(task.get("items", []), array)
+
+        result = ""
+        for group in array:
+            result += f"  section {group}\n"
+            for item in array[group]:
+                result += item
+
+        return result
 
     def csv_dumps(self, tasks):
         """Convert tasks into CSV."""
@@ -259,6 +307,15 @@ class ThingsCLI:  # pylint: disable=R0902
         )
 
         parser.add_argument(
+            "-g",
+            "--gantt",
+            action="store_true",
+            default=False,
+            help="output as mermaid-js GANTT",
+            dest="gantt",
+        )
+
+        parser.add_argument(
             "-r",
             "--recursive",
             help="in-depth output",
@@ -301,6 +358,7 @@ class ThingsCLI:  # pylint: disable=R0902
             command = args.command
             self.print_json = args.json
             self.print_csv = args.csv
+            self.print_gantt = args.gantt
             self.print_opml = args.opml
             self.database = args.database or self.database
             self.filter_project = args.filter_project or None
