@@ -39,6 +39,21 @@ class ThingsCLI:  # pylint: disable=R0902
 
     def print_tasks(self, tasks):
         """Print a task."""
+
+        if self.only_projects:
+            for task in tasks:
+                task["items"] = [
+                    items
+                    for items in task["items"]
+                    if items["type"] in ["area", "project"]
+                ]
+                for items in task["items"]:
+                    items["items"] = [
+                        sub_items
+                        for sub_items in items["items"]
+                        if sub_items["type"] in ["area", "project"]
+                    ]
+
         if self.print_json:
             print(json.dumps(tasks))
         elif self.print_opml:
@@ -228,9 +243,16 @@ class ThingsCLI:  # pylint: disable=R0902
             "-a", "--filter-area", dest="filter_area", help="Filter by area"
         )
         parser.add_argument(
-            "-t", "--filtertag", dest="filter_tag", help="Filter by tag"
+            "-t", "--filtertag", dest="filter_tag", help="filter by tag"
         )
-
+        parser.add_argument(
+            "-e",
+            "--only-projects",
+            action="store_true",
+            default=False,
+            dest="only_projects",
+            help="export only projects",
+        )
         parser.add_argument(
             "-o",
             "--opml",
@@ -306,6 +328,7 @@ class ThingsCLI:  # pylint: disable=R0902
             self.filter_project = args.filter_project or None
             self.filter_area = args.filter_area or None
             self.filter_tag = args.filter_tag or None
+            self.only_projects = args.only_projects or None
             self.recursive = args.recursive
             # self.anonymize = args.anonymize
             # self.things3.anonymize = self.anonymize ## not implemented
