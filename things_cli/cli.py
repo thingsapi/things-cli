@@ -117,7 +117,12 @@ class ThingsCLI:  # pylint: disable=R0902
             return
         for task in tasks:
             area = SubElement(top, "outline")
-            area.set("text", task["title"])
+            text = task["title"]
+            if task.get("start_date"):
+                text = f"{text} (Scheduled: {task['start_date']})"
+            elif task.get("start"):
+                text = f"{text} ({task['start']})"
+            area.set("text", text)
             self.opml_convert(task.get("items", []), area)
             task.pop("items", [])
             self.opml_convert(task.get("checklist", []), area)
