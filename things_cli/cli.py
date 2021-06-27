@@ -237,10 +237,10 @@ class ThingsCLI:  # pylint: disable=R0902
         #                     help="anonymize output", dest="anonymize")
 
         parser.add_argument(
-            "-p", "--filter-project", dest="filter_project", help="Filter by project"
+            "-p", "--filter-project", dest="filter_project", help="filter by project"
         )
         parser.add_argument(
-            "-a", "--filter-area", dest="filter_area", help="Filter by area"
+            "-a", "--filter-area", dest="filter_area", help="filter by area"
         )
         parser.add_argument(
             "-t", "--filtertag", dest="filter_tag", help="filter by tag"
