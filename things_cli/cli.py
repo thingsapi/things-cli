@@ -42,17 +42,25 @@ class ThingsCLI:  # pylint: disable=R0902
 
         if self.only_projects:
             for task in tasks:
-                task["items"] = [
-                    items
-                    for items in task["items"]
-                    if items["type"] in ["area", "project"]
-                ]
-                for items in task["items"]:
-                    items["items"] = [
-                        sub_items
-                        for sub_items in items["items"]
-                        if sub_items["type"] in ["area", "project"]
+                task["items"] = (
+                    [
+                        items
+                        for items in task["items"]
+                        if items["type"] in ["area", "project"]
                     ]
+                    if task.get("items")
+                    else []
+                )
+                for items in task["items"]:
+                    items["items"] = (
+                        [
+                            sub_items
+                            for sub_items in items["items"]
+                            if sub_items["type"] in ["area", "project"]
+                        ]
+                        if task.get("items")
+                        else []
+                    )
 
         if self.print_json:
             print(json.dumps(tasks))
