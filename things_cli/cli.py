@@ -32,6 +32,7 @@ class ThingsCLI:  # pylint: disable=R0902
     filter_project = None
     filter_area = None
     filter_tag = None
+    only_projects = None
 
     def __init__(self, database=None):
         """Initialize class."""
