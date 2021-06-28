@@ -32,7 +32,6 @@ class ThingsCLI:  # pylint: disable=R0902
     filter_project = None
     filter_area = None
     filter_tag = None
-    only_projects = None
 
     def __init__(self, database=None):
         """Initialize class."""
@@ -59,7 +58,7 @@ class ThingsCLI:  # pylint: disable=R0902
                             for sub_items in items["items"]
                             if sub_items["type"] in ["area", "project"]
                         ]
-                        if task.get("items")
+                        if items.get("items")
                         else []
                     )
 
