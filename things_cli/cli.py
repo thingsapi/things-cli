@@ -15,8 +15,8 @@ import xml.etree.ElementTree as ETree
 from xml.etree.ElementTree import Element, SubElement
 
 import argcomplete  # type: ignore
-
 import things as api
+
 from things_cli import __version__
 
 
@@ -32,6 +32,7 @@ class ThingsCLI:  # pylint: disable=R0902
     filter_project = None
     filter_area = None
     filter_tag = None
+    only_projects = None
 
     def __init__(self, database=None):
         """Initialize class."""
@@ -39,6 +40,29 @@ class ThingsCLI:  # pylint: disable=R0902
 
     def print_tasks(self, tasks):
         """Print a task."""
+
+        if self.only_projects:
+            for task in tasks:
+                task["items"] = (
+                    [
+                        items
+                        for items in task["items"]
+                        if items["type"] in ["area", "project"]
+                    ]
+                    if task.get("items")
+                    else []
+                )
+                for items in task["items"]:
+                    items["items"] = (
+                        [
+                            sub_items
+                            for sub_items in items["items"]
+                            if sub_items["type"] in ["area", "project"]
+                        ]
+                        if items.get("items")
+                        else []
+                    )
+
         if self.print_json:
             print(json.dumps(tasks))
         elif self.print_opml:
@@ -102,7 +126,12 @@ class ThingsCLI:  # pylint: disable=R0902
             return
         for task in tasks:
             area = SubElement(top, "outline")
-            area.set("text", task["title"])
+            text = task["title"]
+            if task.get("start_date"):
+                text = f"{text} (Scheduled: {task['start_date']})"
+            elif task.get("start"):
+                text = f"{text} ({task['start']})"
+            area.set("text", text)
             self.opml_convert(task.get("items", []), area)
             task.pop("items", [])
             self.opml_convert(task.get("checklist", []), area)
@@ -135,7 +164,7 @@ class ThingsCLI:  # pylint: disable=R0902
     @classmethod
     def print_unimplemented(cls, command):
         """Show warning that method is not yet implemented."""
-        print("command '%s' not implemented yet" % command, file=sys.stderr)
+        print(f"command '{command}' not implemented yet", file=sys.stderr)
 
     @classmethod
     def get_parser(cls):
@@ -222,15 +251,22 @@ class ThingsCLI:  # pylint: disable=R0902
         #                     help="anonymize output", dest="anonymize")
 
         parser.add_argument(
-            "-p", "--filter-project", dest="filter_project", help="Filter by project"
+            "-p", "--filter-project", dest="filter_project", help="filter by project"
         )
         parser.add_argument(
-            "-a", "--filter-area", dest="filter_area", help="Filter by area"
+            "-a", "--filter-area", dest="filter_area", help="filter by area"
         )
         parser.add_argument(
-            "-t", "--filtertag", dest="filter_tag", help="Filter by tag"
+            "-t", "--filtertag", dest="filter_tag", help="filter by tag"
         )
-
+        parser.add_argument(
+            "-e",
+            "--only-projects",
+            action="store_true",
+            default=False,
+            dest="only_projects",
+            help="export only projects",
+        )
         parser.add_argument(
             "-o",
             "--opml",
@@ -275,7 +311,7 @@ class ThingsCLI:  # pylint: disable=R0902
             "--version",
             "-v",
             action="version",
-            version="%(prog)s (version {version})".format(version=__version__),
+            version=f"%(prog)s (version {__version__})",
         )
 
         argcomplete.autocomplete(parser)
@@ -306,6 +342,7 @@ class ThingsCLI:  # pylint: disable=R0902
             self.filter_project = args.filter_project or None
             self.filter_area = args.filter_area or None
             self.filter_tag = args.filter_tag or None
+            self.only_projects = args.only_projects or None
             self.recursive = args.recursive
             # self.anonymize = args.anonymize
             # self.things3.anonymize = self.anonymize ## not implemented

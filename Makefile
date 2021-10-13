@@ -77,6 +77,8 @@ code-lint: ## Lint the code
 	@echo Pylama...
 	@if type pylama >/dev/null 2>&1 ; then pylama $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install pylama' first." >&2 ; fi
+	@if type fixit >/dev/null 2>&1 ; then cd $(SRC_CORE) ; fixit run_rules ; \
+	 else echo "SKIPPED. Run '$(PIP) install fixit' first." >&2 ; fi
 	@echo Pylint...
 	@if type pylint >/dev/null 2>&1 ; then pylint $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install pylint' first." >&2 ; fi
