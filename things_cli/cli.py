@@ -15,8 +15,8 @@ import xml.etree.ElementTree as ETree
 from xml.etree.ElementTree import Element, SubElement
 
 import argcomplete  # type: ignore
-
 import things as api
+
 from things_cli import __version__
 
 
@@ -164,7 +164,7 @@ class ThingsCLI:  # pylint: disable=R0902
     @classmethod
     def print_unimplemented(cls, command):
         """Show warning that method is not yet implemented."""
-        print("command '%s' not implemented yet" % command, file=sys.stderr)
+        print(f"command '{command}' not implemented yet", file=sys.stderr)
 
     @classmethod
     def get_parser(cls):
@@ -311,7 +311,7 @@ class ThingsCLI:  # pylint: disable=R0902
             "--version",
             "-v",
             action="version",
-            version="%(prog)s (version {version})".format(version=__version__),
+            version=f"%(prog)s (version {__version__})",
         )
 
         argcomplete.autocomplete(parser)
