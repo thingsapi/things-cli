@@ -6,6 +6,7 @@ from __future__ import print_function
 
 import argparse
 import csv
+from datetime import datetime
 from io import StringIO
 import json
 import sys
@@ -20,7 +21,7 @@ import things as api
 from things_cli import __version__
 
 
-class ThingsCLI:  # pylint: disable=R0902
+class ThingsCLI:  # pylint: disable=too-many-instance-attributes
     """A simple Python 3 CLI to read your Things app data."""
 
     print_json = False
@@ -190,7 +191,8 @@ class ThingsCLI:  # pylint: disable=R0902
         subparsers.add_parser("all", help="Shows all tasks")
         subparsers.add_parser("areas", help="Shows all areas")
         subparsers.add_parser("projects", help="Shows all projects")
-        subparsers.add_parser("logbook", help="Shows tasks completed today")
+        subparsers.add_parser("logbook", help="Shows completed tasks")
+        subparsers.add_parser("logtoday", help="Shows tasks completed today")
         subparsers.add_parser("tags", help="Shows all tags ordered by their usage")
         subparsers.add_parser("deadlines", help="Shows tasks with due dates")
 
@@ -376,6 +378,10 @@ class ThingsCLI:  # pylint: disable=R0902
                     {"title": "Areas", "items": areas},
                 ]
                 self.print_tasks(structure)
+            elif command == "logtoday":
+                today = datetime.now().strftime("%Y-%m-%d")
+                result = getattr(api, "logbook")(**defaults, stop_date=today)
+                self.print_tasks(result)
             elif command == "upcoming":
                 result = getattr(api, command)(**defaults)
                 result.sort(key=lambda task: task["start_date"], reverse=False)

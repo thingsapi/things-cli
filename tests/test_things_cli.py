@@ -30,7 +30,7 @@ class ThingsCLICase(unittest.TestCase):
         for command in parser._subparsers._actions[
             1
         ].choices:  # noqa # pylint: disable=protected-access
-            if command not in ["feedback", "search"]:
+            if command not in ["feedback", "search", "logtoday"]:
                 args = parser.parse_args([command])
                 self._test_main(args, " ")
                 args = parser.parse_args(["-r", command])
@@ -41,6 +41,12 @@ class ThingsCLICase(unittest.TestCase):
                 self._test_main(args, ";")
                 args = parser.parse_args(["-r", "-j", command])
                 self._test_main(args, " ")
+            elif command in ["logtoday"]:
+                args = parser.parse_args([command])
+                self._test_main(args, "")
+            elif command in ["search"]:
+                args = parser.parse_args([command, "To-Do in Inbox"])
+                self._test_main(args, "To-Do in Inbox")
         args = parser.parse_args(["search", "To-Do"])
         self._test_main(args, "To-Do in Today")
 
