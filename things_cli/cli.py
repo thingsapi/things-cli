@@ -26,6 +26,7 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
 
     print_json = False
     print_csv = False
+    print_gantt = False
     print_opml = False
     # anonymize = False
     database = None
@@ -70,8 +71,63 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
             print(self.opml_dumps(tasks))
         elif self.print_csv:
             print(self.csv_dumps(tasks))
+        elif self.print_gantt:
+            print("gantt")
+            print("  dateFormat  YYYY-MM-DD")
+            print("  title       Things To-Dos")
+            print("  excludes    weekends")
+            print(self.gantt_dumps(tasks))
         else:
             print(self.txt_dumps(tasks), end="")
+
+    def gantt_dumps(self, tasks, array=None):
+        """Convert tasks into mermaid-js GANTT."""
+
+        result = ""
+
+        if array is None:
+            array = {}
+
+        for task in tasks:
+            ThingsCLI.gantt_add_task(task, array)
+            self.gantt_dumps(task.get("items", []), array)
+
+        for group in array:
+            result += f"  section {group}\n"
+            for item in array[group]:
+                result += item
+
+        return result
+
+    @staticmethod
+    def gantt_add_task(task, array):
+        """Add a task to a mermaid-js GANTT."""
+
+        context = (
+            task.get("project_title", None)
+            or task.get("area_title", None)
+            or task.get("heading_title", None)
+            or task.get("start", None)
+            or ""
+        )
+
+        title = task["title"].replace(":", " ")
+        start = task.get("start_date")
+        deadline = task.get("deadline") or "1h"
+        if not start and deadline != "1h":
+            start = deadline
+        if start == deadline:
+            deadline = "1h"
+        if deadline == "1h":
+            visual = ":milestone"
+        else:
+            visual = ":active"
+            # noqa todo: if in the past: done
+        if start and not task.get("stop_date"):
+            if context not in array:
+                array[context] = []
+            if not "".join(s for s in array[context] if title.lower() in s.lower()):
+                array[context].append(f"    {title} {visual}, {start}, {deadline}\n")
 
     def csv_dumps(self, tasks):
         """Convert tasks into CSV."""
@@ -297,6 +353,15 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
         )
 
         parser.add_argument(
+            "-g",
+            "--gantt",
+            action="store_true",
+            default=False,
+            help="output as mermaid-js GANTT",
+            dest="gantt",
+        )
+
+        parser.add_argument(
             "-r",
             "--recursive",
             help="in-depth output",
@@ -339,6 +404,7 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
             command = args.command
             self.print_json = args.json
             self.print_csv = args.csv
+            self.print_gantt = args.gantt
             self.print_opml = args.opml
             self.database = args.database or self.database
             self.filter_project = args.filter_project or None
