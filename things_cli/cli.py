@@ -15,8 +15,8 @@ import xml.etree.ElementTree as ETree
 from xml.etree.ElementTree import Element, SubElement
 
 import argcomplete  # type: ignore
-
 import things as api
+
 from things_cli import __version__
 
 
@@ -58,43 +58,51 @@ class ThingsCLI:  # pylint: disable=R0902
     def gantt_dumps(self, tasks, array=None):
         """Convert tasks into mermaid-js GANTT."""
 
-        for task in tasks:
-            context = (
-                task.get("project_title", None)
-                or task.get("area_title", None)
-                or task.get("heading_title", None)
-                or task.get("start", None)
-                or ""
-            )
+        result = ""
 
-            title = task["title"].replace(":", " ")
-            start = task.get("start_date")
-            deadline = task.get("deadline") or "1h"
-            if not start and deadline != "1h":
-                start = deadline
-            if start == deadline:
-                deadline = "1h"
-            if deadline == "1h":
-                visual = ":milestone"
-            else:
-                visual = ":active"
-                # noqa todo: if in the past: done
-            if start and not task.get("stop_date"):
-                if context not in array:
-                    array[context] = []
-                if not "".join(s for s in array[context] if title.lower() in s.lower()):
-                    array[context].append(
-                        f"    {title} {visual}, {start}, {deadline}\n"
-                    )
+        if array is None:
+            array = {}
+
+        for task in tasks:
+            ThingsCLI.gantt_add_task(task, array)
             self.gantt_dumps(task.get("items", []), array)
 
-        result = ""
         for group in array:
             result += f"  section {group}\n"
             for item in array[group]:
                 result += item
 
         return result
+
+    @staticmethod
+    def gantt_add_task(task, array):
+        """Add a task to a mermaid-js GANTT."""
+
+        context = (
+            task.get("project_title", None)
+            or task.get("area_title", None)
+            or task.get("heading_title", None)
+            or task.get("start", None)
+            or ""
+        )
+
+        title = task["title"].replace(":", " ")
+        start = task.get("start_date")
+        deadline = task.get("deadline") or "1h"
+        if not start and deadline != "1h":
+            start = deadline
+        if start == deadline:
+            deadline = "1h"
+        if deadline == "1h":
+            visual = ":milestone"
+        else:
+            visual = ":active"
+            # noqa todo: if in the past: done
+        if start and not task.get("stop_date"):
+            if context not in array:
+                array[context] = []
+            if not "".join(s for s in array[context] if title.lower() in s.lower()):
+                array[context].append(f"    {title} {visual}, {start}, {deadline}\n")
 
     def csv_dumps(self, tasks):
         """Convert tasks into CSV."""
@@ -183,7 +191,7 @@ class ThingsCLI:  # pylint: disable=R0902
     @classmethod
     def print_unimplemented(cls, command):
         """Show warning that method is not yet implemented."""
-        print("command '%s' not implemented yet" % command, file=sys.stderr)
+        print(f"command '{command}' not implemented yet", file=sys.stderr)
 
     @classmethod
     def get_parser(cls):
@@ -332,7 +340,7 @@ class ThingsCLI:  # pylint: disable=R0902
             "--version",
             "-v",
             action="version",
-            version="%(prog)s (version {version})".format(version=__version__),
+            version=f"%(prog)s (version {__version__})",
         )
 
         argcomplete.autocomplete(parser)
