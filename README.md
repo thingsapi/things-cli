@@ -64,8 +64,10 @@ $ git clone https://github.com/thingsapi/things-cli && cd things-cli && make ins
 
 % things-cli --opml --recursive all > all.opml && open all.opml
 
+% things-cli --gantt --recursive all > all.mmd && mmdc -i all.mmd -o all.png && open all.png
+
 % things-cli -h
-usage: things-cli [-h] [-o] [-j] [-c] [-r] [-d DATABASE] [--version] command ...
+usage: cli.py [-h] [-p FILTER_PROJECT] [-a FILTER_AREA] [-t FILTER_TAG] [-e] [-o] [-j] [-c] [-g] [-r] [-d DATABASE] [--version] command ...
 
 Simple read-only Thing 3 CLI.
 
@@ -76,12 +78,15 @@ positional arguments:
     upcoming            Shows upcoming tasks
     anytime             Shows anytime tasks
     completed           Shows completed tasks
+    someday             Shows someday tasks
     canceled            Shows canceled tasks
     trash               Shows trashed tasks
+    todos               Shows all todos
     all                 Shows all tasks
     areas               Shows all areas
     projects            Shows all projects
-    logbook             Shows tasks completed today
+    logbook             Shows completed tasks
+    logtoday            Shows tasks completed today
     tags                Shows all tags ordered by their usage
     deadlines           Shows tasks with due dates
     feedback            Give feedback
@@ -89,9 +94,17 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  -p FILTER_PROJECT, --filter-project FILTER_PROJECT
+                        filter by project
+  -a FILTER_AREA, --filter-area FILTER_AREA
+                        filter by area
+  -t FILTER_TAG, --filtertag FILTER_TAG
+                        filter by tag
+  -e, --only-projects   export only projects
   -o, --opml            output as OPML
   -j, --json            output as JSON
   -c, --csv             output as CSV
+  -g, --gantt           output as mermaid-js GANTT
   -r, --recursive       in-depth output
   -d DATABASE, --database DATABASE
                         set path to database
@@ -107,3 +120,7 @@ optional arguments:
 ### Excel
 
 ![excel](https://raw.githubusercontent.com/thingsapi/things-cli/master/resources/excel.png)
+
+### GANTT
+
+![gantt](https://raw.githubusercontent.com/thingsapi/things-cli/master/resources/gantt.png)
