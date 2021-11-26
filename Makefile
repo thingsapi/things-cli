@@ -47,7 +47,7 @@ clean: ## Cleanup
 	@find . -name __pycache__ -delete
 	@rm -rf htmlcov
 	@rm -rf build dist *.egg-info .eggs
-	@rm -rf $(SRC_CORE)/.mypy_cache .mypy_cache
+	@rm -rf $(SRC_CORE)/.mypy_cache $(SRC_TEST)/.mypy_cache .mypy_cache
 	@rm -f .coverage
 
 auto-style: ## Style the code
