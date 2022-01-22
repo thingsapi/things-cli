@@ -249,6 +249,7 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
         subparsers.add_parser("projects", help="Shows all projects")
         subparsers.add_parser("logbook", help="Shows completed tasks")
         subparsers.add_parser("logtoday", help="Shows tasks completed today")
+        subparsers.add_parser("createdtoday", help="Shows tasks created today")
         subparsers.add_parser("tags", help="Shows all tags ordered by their usage")
         subparsers.add_parser("deadlines", help="Shows tasks with due dates")
 
@@ -447,6 +448,9 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
             elif command == "logtoday":
                 today = datetime.now().strftime("%Y-%m-%d")
                 result = getattr(api, "logbook")(**defaults, stop_date=today)
+                self.print_tasks(result)
+            elif command == "createdtoday":
+                result = getattr(api, "last")('1d')
                 self.print_tasks(result)
             elif command == "upcoming":
                 result = getattr(api, command)(**defaults)
