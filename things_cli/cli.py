@@ -403,7 +403,6 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
         if args is None:
             self.main(ThingsCLI.get_parser().parse_args())
         else:
-            command = args.command
             self.print_json = args.json
             self.print_csv = args.csv
             self.print_gantt = args.gantt
@@ -418,10 +417,12 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
             # self.things3.anonymize = self.anonymize ## not implemented
             defaults = self.defaults()
 
-            self.parse_command(command, defaults, args)
+            self.parse_command(defaults, args)
 
-    def parse_command(self, command: str, defaults: Dict, args):
+    def parse_command(self, defaults: Dict, args):
         """Handle given command."""
+
+        command = args.command
 
         if command == "tags":
             defaults.pop("tag")
