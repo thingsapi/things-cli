@@ -3,6 +3,7 @@
 """Module documentation goes here."""
 
 import io
+import pathlib
 import sys
 import unittest
 
@@ -12,7 +13,8 @@ from things_cli import cli
 class ThingsCLICase(unittest.TestCase):
     """Class documentation goes here."""
 
-    things3_cli = cli.ThingsCLI(database="tests/main.sqlite")
+    path = pathlib.Path(__file__).parent.resolve()
+    things3_cli = cli.ThingsCLI(database=f"{path}/tests/main.sqlite")
 
     def _test_main(self, args, expected):
         new_out = io.StringIO()
