@@ -10,6 +10,7 @@ from datetime import datetime
 from io import StringIO
 import json
 import sys
+from typing import Dict
 import webbrowser
 from xml.dom import minidom
 import xml.etree.ElementTree as ETree
@@ -122,7 +123,7 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
             visual = ":milestone"
         else:
             visual = ":active"
-            # noqa todo: if in the past: done
+            # lint-ignore todo: if in the past: done
         if start and not task.get("stop_date"):
             if context not in array:
                 array[context] = []
@@ -417,60 +418,65 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
             # self.things3.anonymize = self.anonymize ## not implemented
             defaults = self.defaults()
 
-            if command == "tags":
-                defaults.pop("tag")
-                defaults.pop("project")
-            if command in ["all", "areas"]:
-                defaults.pop("area")
-                defaults.pop("project")
+            self.parse_command(command, defaults, args)
 
-            if command == "all":
-                inbox = api.inbox(**defaults)
-                today = api.today(**defaults)
-                upcoming = api.upcoming(**defaults)
-                anytime = api.anytime(**defaults)
-                someday = api.someday(**defaults)
-                logbook = api.logbook(**defaults)
+    def parse_command(self, command: str, defaults: Dict, args):
+        """Handle given command."""
 
-                no_area = api.projects(**defaults)
-                areas = api.areas(**defaults)
-                structure = [
-                    {"title": "Inbox", "items": inbox},
-                    {"title": "Today", "items": today},
-                    {"title": "Upcoming", "items": upcoming},
-                    {"title": "Anytime", "items": anytime},
-                    {"title": "Someday", "items": someday},
-                    {"title": "Logbook", "items": logbook},
-                    {"title": "No Area", "items": no_area},
-                    {"title": "Areas", "items": areas},
-                ]
-                self.print_tasks(structure)
-            elif command == "logtoday":
-                today = datetime.now().strftime("%Y-%m-%d")
-                result = getattr(api, "logbook")(**defaults, stop_date=today)
-                self.print_tasks(result)
-            elif command == "createdtoday":
-                result = getattr(api, "last")('1d')
-                self.print_tasks(result)
-            elif command == "upcoming":
-                result = getattr(api, command)(**defaults)
-                result.sort(key=lambda task: task["start_date"], reverse=False)
-                self.print_tasks(result)
-            elif command == "search":
-                self.print_tasks(
-                    api.search(
-                        args.string,
-                        filepath=self.database,
-                        include_items=self.recursive,
-                    )
+        if command == "tags":
+            defaults.pop("tag")
+            defaults.pop("project")
+        if command in ["all", "areas"]:
+            defaults.pop("area")
+            defaults.pop("project")
+
+        if command == "all":
+            inbox = api.inbox(**defaults)
+            today = api.today(**defaults)
+            upcoming = api.upcoming(**defaults)
+            anytime = api.anytime(**defaults)
+            someday = api.someday(**defaults)
+            logbook = api.logbook(**defaults)
+
+            no_area = api.projects(**defaults)
+            areas = api.areas(**defaults)
+            structure = [
+                {"title": "Inbox", "items": inbox},
+                {"title": "Today", "items": today},
+                {"title": "Upcoming", "items": upcoming},
+                {"title": "Anytime", "items": anytime},
+                {"title": "Someday", "items": someday},
+                {"title": "Logbook", "items": logbook},
+                {"title": "No Area", "items": no_area},
+                {"title": "Areas", "items": areas},
+            ]
+            self.print_tasks(structure)
+        elif command == "logtoday":
+            today = datetime.now().strftime("%Y-%m-%d")
+            result = getattr(api, "logbook")(**defaults, stop_date=today)
+            self.print_tasks(result)
+        elif command == "createdtoday":
+            result = getattr(api, "last")("1d")
+            self.print_tasks(result)
+        elif command == "upcoming":
+            result = getattr(api, command)(**defaults)
+            result.sort(key=lambda task: task["start_date"], reverse=False)
+            self.print_tasks(result)
+        elif command == "search":
+            self.print_tasks(
+                api.search(
+                    args.string,
+                    filepath=self.database,
+                    include_items=self.recursive,
                 )
-            elif command == "feedback":  # pragma: no cover
-                webbrowser.open("https://github.com/thingsapi/things-cli/issues")
-            elif command in dir(api):
-                self.print_tasks(getattr(api, command)(**defaults))
-            else:  # pragma: no cover
-                ThingsCLI.print_unimplemented(command)
-                sys.exit(3)
+            )
+        elif command == "feedback":  # pragma: no cover
+            webbrowser.open("https://github.com/thingsapi/things-cli/issues")
+        elif command in dir(api):
+            self.print_tasks(getattr(api, command)(**defaults))
+        else:  # pragma: no cover
+            ThingsCLI.print_unimplemented(command)
+            sys.exit(3)
 
 
 def main():
