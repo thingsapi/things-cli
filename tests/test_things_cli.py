@@ -3,7 +3,6 @@
 """Module documentation goes here."""
 
 import io
-import pathlib
 import sys
 import unittest
 
@@ -13,8 +12,7 @@ from things_cli import cli
 class ThingsCLICase(unittest.TestCase):
     """Class documentation goes here."""
 
-    path = pathlib.Path(__file__).parent.resolve()
-    things3_cli = cli.ThingsCLI(database=f"{path}/tests/main.sqlite")
+    things3_cli = cli.ThingsCLI(database="tests/main.sqlite")
 
     def _test_main(self, args, expected):
         new_out = io.StringIO()
@@ -32,7 +30,7 @@ class ThingsCLICase(unittest.TestCase):
         for command in parser._subparsers._actions[
             1
         ].choices:  # noqa # pylint: disable=protected-access
-            if command not in ["feedback", "search", "logtoday"]:
+            if command not in ["feedback", "search", "logtoday", "createdtoday"]:
                 args = parser.parse_args([command])
                 self._test_main(args, " ")
                 args = parser.parse_args(["-r", command])
