@@ -141,7 +141,9 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
             fieldnames.remove("checklist")
 
         output = StringIO()
-        writer = csv.DictWriter(output, fieldnames=fieldnames, delimiter=";")
+        writer = csv.DictWriter(
+            output, fieldnames=fieldnames, delimiter=";", escapechar="\\"
+        )
         writer.writeheader()
 
         self.csv_converter(tasks, writer)
