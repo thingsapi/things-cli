@@ -6,7 +6,7 @@ from __future__ import print_function
 
 import argparse
 import csv
-from datetime import datetime
+import datetime
 from io import StringIO
 import json
 import sys
@@ -15,8 +15,8 @@ import webbrowser
 from xml.dom import minidom
 import xml.etree.ElementTree as ETree
 from xml.etree.ElementTree import Element, SubElement
-
 import argcomplete  # type: ignore
+
 import things as api
 
 from things_cli import __version__
@@ -252,6 +252,7 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
         subparsers.add_parser("projects", help="Shows all projects")
         subparsers.add_parser("logbook", help="Shows completed tasks")
         subparsers.add_parser("logtoday", help="Shows tasks completed today")
+        subparsers.add_parser("logyesterday", help="Shows tasks completed yesterday")
         subparsers.add_parser("createdtoday", help="Shows tasks created today")
         subparsers.add_parser("tags", help="Shows all tags ordered by their usage")
         subparsers.add_parser("deadlines", help="Shows tasks with due dates")
@@ -455,8 +456,13 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
             ]
             self.print_tasks(structure)
         elif command == "logtoday":
-            today = datetime.now().strftime("%Y-%m-%d")
+            today = datetime.datetime.now().strftime("%Y-%m-%d")
             result = getattr(api, "logbook")(**defaults, stop_date=today)
+            self.print_tasks(result)
+        elif command == "logyesterday":
+            today = datetime.date.today().strftime("%Y-%m-%d")
+            yesterday = (datetime.date.today()-datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+            result = getattr(api, "logbook")(**defaults, stop_date=yesterday, exact=True)
             self.print_tasks(result)
         elif command == "createdtoday":
             result = getattr(api, "last")("1d")
