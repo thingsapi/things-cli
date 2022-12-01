@@ -16,11 +16,11 @@ from xml.dom import minidom
 import xml.etree.ElementTree as ETree
 from xml.etree.ElementTree import Element, SubElement
 import argcomplete  # type: ignore
-
 import things as api
 
 from things_cli import __version__
 
+THINGS_TIME_FORMAT="%Y-%m-%d"
 
 class ThingsCLI:  # pylint: disable=too-many-instance-attributes
     """A simple Python 3 CLI to read your Things app data."""
@@ -456,12 +456,11 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
             ]
             self.print_tasks(structure)
         elif command == "logtoday":
-            today = datetime.datetime.now().strftime("%Y-%m-%d")
+            today = datetime.datetime.now().strftime(THINGS_TIME_FORMAT)
             result = getattr(api, "logbook")(**defaults, stop_date=today)
             self.print_tasks(result)
         elif command == "logyesterday":
-            today = datetime.date.today().strftime("%Y-%m-%d")
-            yesterday = (datetime.date.today()-datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+            yesterday = (datetime.date.today()-datetime.timedelta(days=1)).strftime(THINGS_TIME_FORMAT)
             result = getattr(api, "logbook")(**defaults, stop_date=yesterday, exact=True)
             self.print_tasks(result)
         elif command == "createdtoday":
