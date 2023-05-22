@@ -52,7 +52,7 @@ clean: ## Cleanup
 
 auto-style: ## Style the code
 	@echo "isort..."
-	@if type isort >/dev/null 2>&1 ; then isort -rc . ; \
+	@if type isort >/dev/null 2>&1 ; then isort . ; \
 	 else echo "SKIPPED. Run '$(PIP) install isort' first." >&2 ; fi
 	@echo "autoflake..."
 	@if type autoflake >/dev/null 2>&1 ; then autoflake -r --in-place --remove-unused-variables . ; \
@@ -78,20 +78,17 @@ code-lint: ## Lint the code
 	@if type pylama >/dev/null 2>&1 ; then pylama $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install pylama' first." >&2 ; fi
 	@echo Pylint...
-	@if type pylint >/dev/null 2>&1 ; then pylint $(SRC_CORE) ; \
+	@if type pylint >/dev/null 2>&1 ; then pylint -sn $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install pylint' first." >&2 ; fi
 	@echo Flake...
 	@if type flake8 >/dev/null 2>&1 ; then flake8 $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install flake8' first." >&2 ; fi
 	@echo Pyright...
-	@if type pyright >/dev/null 2>&1 ; then pyright $(SRC_CORE) ; \
+	@if type pyright >/dev/null 2>&1 ; then PYRIGHT_PYTHON_FORCE_VERSION=latest pyright $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run 'npm install -f pyright' first." >&2 ; fi
 	@echo MyPy...
 	@if type mypy >/dev/null 2>&1 ; then mypy --ignore-missing-imports $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install mypy' first." >&2 ; fi
-	@echo Fixit...
-	@if type fixit >/dev/null 2>&1 ; then cd $(SRC_CORE) ; fixit run_rules ; \
-	 else echo "SKIPPED. Run '$(PIP) install fixit' first." >&2 ; fi
 
 lint: code-style code-lint  ## Lint everything
 
@@ -125,7 +122,7 @@ upload: build ## Upload the code
 	@twine upload dist/$(APP)*
 
 db-to-things:
-	@cp tests/main.sqlite* ~/Library/Group\ Containers/JLMPQHK86H.com.culturedcode.ThingsMac/Things\ Database.thingsdatabase/
+	@cp tests/main.sqlite* ~/Library/Group\ Containers/JLMPQHK86H.com.culturedcode.ThingsMac/ThingsData-*/Things\ Database.thingsdatabase/
 
 db-from-things:
-	@cp ~/Library/Group\ Containers/JLMPQHK86H.com.culturedcode.ThingsMac/Things\ Database.thingsdatabase/main.sqlite* tests/
+	@cp ~/Library/Group\ Containers/JLMPQHK86H.com.culturedcode.ThingsMac/ThingsData-*/Things\ Database.thingsdatabase/main.sqlite* tests

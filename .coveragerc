@@ -1,13 +1,12 @@
 [report]
+
 exclude_lines =
     if __name__ == .__main__.:
     pragma: no cover
-
-[run]
 
 omit =
     setup.py
     */__init__.py
     src/*_app.py
     tests/*
-    *site-packages*
+    */site-packages/*

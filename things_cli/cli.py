@@ -391,13 +391,13 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
 
     def defaults(self):
         """Set default options for the new API."""
-        return dict(
-            project=self.filter_project,
-            area=self.filter_area,
-            tag=self.filter_tag,
-            include_items=self.recursive,
-            filepath=self.database,
-        )
+        return {
+            "project": self.filter_project,
+            "area": self.filter_area,
+            "tag": self.filter_tag,
+            "include_items": self.recursive,
+            "filepath": self.database,
+        }
 
     def main(self, args=None):
         """Start the main app."""
