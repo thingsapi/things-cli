@@ -56,5 +56,5 @@ setup(
             "things-cli = things_cli.cli:main",
         ]
     },
-    install_requires=["things.py", "argcomplete"],
+    install_requires=["things.py>=0.0.15", "argcomplete>=3.0.0"],
 )
