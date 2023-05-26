@@ -74,6 +74,9 @@ code-count: ## Count the code
 	 else echo "SKIPPED. Run 'brew install cloc' first." >&2 ; fi
 
 code-lint: ## Lint the code
+	@echo Ruff...
+	@if type ruff >/dev/null 2>&1 ; then ruff $(SRC_CORE) ; \
+	 else echo "SKIPPED. Run '$(PIP) install ruff' first." >&2 ; fi
 	@echo Pylama...
 	@if type pylama >/dev/null 2>&1 ; then pylama $(SRC_CORE) ; \
 	 else echo "SKIPPED. Run '$(PIP) install pylama' first." >&2 ; fi
