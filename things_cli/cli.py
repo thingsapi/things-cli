@@ -313,10 +313,10 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
         #                     help="anonymize output", dest="anonymize")
 
         parser.add_argument(
-            "-p", "--filter-project", dest="filter_project", help="filter by project"
+            "-p", "--filter-project", dest="filter_project", help="filter by project (UUID)"
         )
         parser.add_argument(
-            "-a", "--filter-area", dest="filter_area", help="filter by area"
+            "-a", "--filter-area", dest="filter_area", help="filter by area (UUID)"
         )
         parser.add_argument(
             "-t", "--filtertag", dest="filter_tag", help="filter by tag"
