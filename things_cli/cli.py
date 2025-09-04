@@ -205,6 +205,7 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
             return result
         for task in tasks:
             title = task["title"]
+            notes = task.get("notes", "")
             context = (
                 task.get("project_title", None)
                 or task.get("area_title", None)
@@ -214,11 +215,13 @@ class ThingsCLI:  # pylint: disable=too-many-instance-attributes
             start = task.get("start_date", None)
             details = " | ".join(filter(None, [start, context]))
             result = result + f"{indentation}- {title} ({details})\n"
-            result = self.txt_dumps(task.get("items", []), indentation + "  ", result)
+            new_indentation = indentation + "  "
+            if notes:
+                lines = [f"{new_indentation}{ln}\n" for ln in notes.split("\n")]
+                result += "".join(lines)
+            result = self.txt_dumps(task.get("items", []), new_indentation, result)
             task.pop("items", [])
-            result = self.txt_dumps(
-                task.get("checklist", []), indentation + "  ", result
-            )
+            result = self.txt_dumps(task.get("checklist", []), new_indentation, result)
 
         return result
 

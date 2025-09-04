@@ -78,6 +78,7 @@ class ThingsCLICase(unittest.TestCase):
         finally:
             sys.stdout = old_out
         self.assertIn("To-Do in Today", new_out.getvalue())
+        self.assertIn("\n  With\n  Notes\n", new_out.getvalue())
 
     def test_csv(self):
         """Test Next via CSV."""
